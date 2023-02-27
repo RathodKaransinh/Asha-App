@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "53282846122",
+    "project_id": "asha-app-5c3ec",
+    "storage_bucket": "asha-app-5c3ec.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:53282846122:android:0d35c947afab65cf2d67d3",
+        "android_client_info": {
+          "package_name": "com.example.ashaapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "53282846122-bk8n3oc8b9c4p4fr3smbmp431c7paeo8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjNs7ZsgGCJk1G4DBzwKYOvI0MRoOy2Q4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "53282846122-bk8n3oc8b9c4p4fr3smbmp431c7paeo8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:53282846122:android:46340066f52e3d4c2d67d3",
+        "android_client_info": {
+          "package_name": "com.example.ashainsentive"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "53282846122-bk8n3oc8b9c4p4fr3smbmp431c7paeo8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjNs7ZsgGCJk1G4DBzwKYOvI0MRoOy2Q4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "53282846122-bk8n3oc8b9c4p4fr3smbmp431c7paeo8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context=".AnalyticsCard">
+
+    <!-- TODO: Update blank fragment layout -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        tools:ignore="UselessParent">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/first_card"
+            android:layout_width="@dimen/_160sdp"
+            android:layout_height="@dimen/_180sdp"
+            android:layout_marginTop="@dimen/_30sdp"
+            app:cardCornerRadius="5dp"
+            app:strokeColor="#FFB050"
+            app:strokeWidth="1dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/incentive_number1stcard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/_55sdp"
+                    android:text="1200"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_20sdp"
+                    android:textStyle="bold"
+                    tools:ignore="HardcodedText" />
+
+                <TextView
+                    android:id="@+id/incentive_month"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/incentive_number1stcard"
+                    android:paddingTop="@dimen/_5sdp"
+                    android:text="Incentives this month"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    tools:ignore="HardcodedText" />
+
+                <pl.droidsonroids.gif.GifImageView
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_1sdp"
+                    android:layout_below="@+id/incentive_month"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginTop="@dimen/_30sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:src="@drawable/incentives_gif" />
+            </RelativeLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/second_card"
+            android:layout_width="@dimen/_120sdp"
+            android:layout_height="@dimen/_85sdp"
+            android:layout_marginStart="@dimen/_11sdp"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:layout_toEndOf="@+id/first_card"
+            app:cardCornerRadius="@dimen/_5sdp"
+            app:cardElevation="1dp"
+            app:strokeColor="@color/black"
+            app:strokeWidth="1dp">
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/third_card"
+            android:layout_width="@dimen/_120sdp"
+            android:layout_height="@dimen/_85sdp"
+            android:layout_below="@+id/second_card"
+            android:layout_marginStart="@dimen/_11sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_toEndOf="@+id/first_card"
+            app:cardCornerRadius="@dimen/_5sdp"
+            app:cardElevation="1dp"
+            app:strokeColor="@color/black"
+            app:strokeWidth="1dp">
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/fourth_card"
+            android:layout_width="@dimen/_292sdp"
+            android:layout_height="@dimen/_120sdp"
+            android:layout_below="@+id/first_card"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="@dimen/_5sdp"
+            app:cardElevation="1dp"
+            app:strokeColor="@color/black"
+            app:strokeWidth="1dp">
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </RelativeLayout>
+</RelativeLayout>
