@@ -1,8 +1,12 @@
-package com.example.ashaapp
+package com.example.ashaapp.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.example.ashaapp.fragments.AddIncentivesFragment
+import com.example.ashaapp.fragments.AnalyticsCard
+import com.example.ashaapp.fragments.ProfileFragment
+import com.example.ashaapp.R
 import com.example.ashaapp.databinding.ActivityMainBinding
 
 

@@ -1,4 +1,4 @@
-package com.example.ashaapp
+package com.example.ashaapp.activities
 
 import android.app.ProgressDialog
 import android.content.ContentValues
@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.ashaapp.R
 import com.google.firebase.auth.FirebaseAuth
 
 class LoginActivity : AppCompatActivity() {

@@ -14,22 +14,16 @@
         android:theme="@style/Theme.AshaApp"
         tools:targetApi="31">
         <activity
-            android:name=".AddIncentivesActivity"
+            android:name=".activities.MainActivity"
             android:exported="false" />
         <activity
-            android:name=".ProfileActivity"
+            android:name=".activities.EnterPinActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.CreatePin"
             android:exported="false" />
         <activity
-            android:name=".EnterPinActivity"
-            android:exported="false" />
-        <activity
-            android:name=".CreatePin"
-            android:exported="false" />
-        <activity
-            android:name=".LoginActivity"
+            android:name=".activities.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,6 +1,5 @@
-package com.example.ashaapp
+package com.example.ashaapp.activities
 
-import android.app.ProgressDialog
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

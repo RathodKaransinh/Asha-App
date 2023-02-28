@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context=".AnalyticsCard">
+    tools:context=".fragments.AnalyticsCard">
 
     <!-- TODO: Update blank fragment layout -->
     <RelativeLayout
@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/incentive_number1stcard"
+                    android:id="@+id/incentive_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingTop="@dimen/_55sdp"
@@ -48,7 +48,7 @@
                     android:id="@+id/incentive_month"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/incentive_number1stcard"
+                    android:layout_below="@+id/incentive_number"
                     android:paddingTop="@dimen/_5sdp"
                     android:text="Incentives this month"
                     android:textAlignment="center"
