@@ -49,10 +49,13 @@ dependencies {
 
     implementation platform('com.google.firebase:firebase-bom:31.2.2')
     implementation 'com.google.firebase:firebase-auth-ktx'
+    implementation 'com.google.firebase:firebase-firestore-ktx'
 
     implementation 'androidx.navigation:navigation-fragment:2.5.3'
     implementation 'androidx.navigation:navigation-ui:2.5.3'
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.22'
     implementation 'com.intuit.sdp:sdp-android:1.1.0'
     implementation 'com.intuit.ssp:ssp-android:1.0.5'
+
+    implementation 'androidx.fragment:fragment-ktx:1.5.5'
 }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Asha App</string>
+    <string name="app_name">Asha</string>
     <string name="todo">TODO</string>
     <string name="loginHead">Log in to continue</string>
     <string name="action_settings">Settings</string>

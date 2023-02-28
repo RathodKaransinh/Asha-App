@@ -3,12 +3,13 @@ package com.example.ashaapp.activities
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
+import com.example.ashaapp.R
+import com.example.ashaapp.databinding.ActivityMainBinding
 import com.example.ashaapp.fragments.AddIncentivesFragment
 import com.example.ashaapp.fragments.AnalyticsCard
 import com.example.ashaapp.fragments.ProfileFragment
-import com.example.ashaapp.R
-import com.example.ashaapp.databinding.ActivityMainBinding
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,20 +22,24 @@ class MainActivity : AppCompatActivity() {
         setContentView(view)
         setSupportActionBar(binding.toolbar)
 
-        if (savedInstanceState == null) loadFragment(AnalyticsCard())
+        val first: Fragment = AnalyticsCard()
+        val second: Fragment = AddIncentivesFragment()
+        val third: Fragment = ProfileFragment()
+
+        if (savedInstanceState == null) loadFragment(first)
 
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.page_1 -> {
-                    loadFragment(AnalyticsCard())
+                    loadFragment(first)
                     true
                 }
                 R.id.page_2 -> {
-                    loadFragment(AddIncentivesFragment())
+                    loadFragment(second)
                     true
                 }
                 R.id.page_3 -> {
-                    loadFragment(ProfileFragment())
+                    loadFragment(third)
                     true
                 }
                 else -> false
@@ -43,8 +48,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadFragment(fragment: Fragment) {
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.container, fragment)
-        transaction.commit()
+        val fm: FragmentManager = supportFragmentManager
+        val ft: FragmentTransaction = fm.beginTransaction()
+        ft.replace(R.id.container, fragment)
+        ft.commit()
     }
 }
