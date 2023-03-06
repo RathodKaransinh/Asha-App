@@ -1,16 +1,173 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/profile"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.ProfileFragment">
+    android:foregroundTint="#C6E5F3"
+    android:paddingStart="20dp"
+    android:paddingEnd="0dp"
+    android:orientation="vertical"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:id="@+id/profileText"
+        android:id="@+id/profileImage"
+        style="@style/TextAppearance.AppCompat.Large"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_name"
         android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="" />
+        android:text="A"
+        android:textColor="@color/white" />
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/profileName"
+        style="@style/TextAppearance.AppCompat.Large"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="65dp"
+        android:layout_marginTop="10dp"
+        android:text="Asha Name"
+        android:textColor="@color/black"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/profileDistrict"
+        style="@style/TextAppearance.AppCompat.Large"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="65dp"
+        android:layout_marginTop="40dp"
+        android:text="District"
+        android:textColor="@color/black"
+        android:textSize="14sp" />
+
+    <TextView
+        style="@style/TextAppearance.AppCompat.Large"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="75dp"
+        android:text="Details"
+        android:textColor="@color/black"
+        android:textSize="18sp" />
+
+    <ScrollView
+        android:id="@+id/ProfileRecentSV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="190dp"
+        android:layout_marginEnd="44dp"
+        android:layout_marginBottom="80dp"
+        android:background="#A1A7D7ED"
+        android:scrollbarStyle="insideInset">
+
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="105dp"
+        android:text="Contact number"
+        android:textColor="#000000"
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/profileRecentEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/ProfileRecentSV"
+        android:layout_alignTop="@+id/ProfileRecentSV"
+        android:layout_alignEnd="@+id/ProfileRecentSV"
+        android:layout_margin="10dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Himmatnagar"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="145dp"
+        android:text="Recent reach"
+        android:textColor="#065F87"
+        android:textColorHighlight="#050000"
+        android:textColorLink="#000000"
+        android:textSize="24sp" />
+
+    <Button
+        android:id="@+id/profileEditButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="47dp"
+        android:background="#C6E5F3"
+        android:text="Edit"
+        app:iconTint="#C6E5F3"
+        app:rippleColor="#C6E5F3" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/profileRecentEditText"
+        android:layout_alignStart="@+id/ProfileRecentSV"
+        android:layout_alignEnd="@+id/ProfileRecentSV"
+        android:text="Taluka"
+        android:layout_marginStart="15dp"
+        android:textColor="#000000"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView4"
+        android:layout_alignStart="@+id/ProfileRecentSV"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        android:text="PH1"
+        android:textColor="#000000"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView5"
+        android:layout_alignStart="@+id/ProfileRecentSV"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        android:text="PH2"
+        android:textColor="#000000"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/profileLogOutButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:background="#C6F5F3"
+        android:layout_centerHorizontal="true"
+        android:text="Logout"
+        app:iconTint="#C6E5F3"
+        app:rippleColor="#C6E5F3" />
+
+</RelativeLayout>

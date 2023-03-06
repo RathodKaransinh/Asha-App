@@ -5,15 +5,22 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
         android:contentDescription="@string/todo"
-        android:scaleType="fitXY"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/login_bk" />
+        app:srcCompat="@drawable/wave__2_" />
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:contentDescription="@string/todo"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/wave__1_" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
             android:text="Create a 4 digit pin"
-            android:textColor="@color/primaryTextColor" />
+            android:textColor="@color/purple_500" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -56,7 +63,6 @@
             android:layout_marginStart="150dp"
             android:layout_marginTop="30dp"
             android:layout_marginEnd="50dp"
-            android:background="@drawable/btn_bg"
             android:text="Create"
             android:textAllCaps="false"
             android:textSize="18sp" />

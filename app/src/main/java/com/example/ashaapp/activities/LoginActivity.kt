@@ -55,6 +55,10 @@ class LoginActivity : AppCompatActivity() {
                                 this, "Logged in successfully.",
                                 Toast.LENGTH_SHORT
                             ).show()
+                            sharedPreferences.edit().apply() {
+                                putString("password", pass.text.toString())
+                                apply()
+                            }
                             val intent = Intent(this, CreatePin::class.java)
                             startActivity(intent)
                             finish()

@@ -1,16 +1,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/page_1"
+        android:id="@+id/home_page"
         android:enabled="true"
         android:icon="@drawable/baseline_home_24"
         android:title="@string/home"/>
     <item
-        android:id="@+id/page_2"
-        android:enabled="true"
-        android:icon="@drawable/baseline_add_box_24"
-        android:title="@string/addIncentives"/>
-    <item
-        android:id="@+id/page_3"
+        android:id="@+id/profile_page"
         android:enabled="true"
         android:icon="@drawable/baseline_person_24"
         android:title="@string/profile"/>

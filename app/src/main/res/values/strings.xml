@@ -16,4 +16,22 @@
     <string name="fabDesc">Navigate to AddIncentives activity</string>
     <string name="addIncentives">AddIncentives</string>
     <string name="hello_profile_fragment">Hello Profile Fragment</string>
+    <string name="logout">Logout</string>
+    <string name="verify_email">Verify email</string>
+    <string name="update">Update</string>
+    <string name="full_name">Full Name</string>
+    <string name="district">District</string>
+
+    <string-array name="scheme_code">
+        <item>RCH.1.3.5</item>
+        <item>RCH.7.1.11</item>
+        <item>RCH.7.1.12</item>
+        <item>RCH.7.5.2</item>
+    </string-array>
+    <string-array name="scheme">
+        <item>શહેરી વિસ્તાર:JSYના હેઠળની સગર્ભાને સંપુર્ણ પુર્વ પ્રસુતિ સેવાઓ(ANC) સેવાઓ અપાવવા, લાભાર્થીનું આધાર લીંકડ બેંક એકાઉન્ટ ખોલાવવા માટે (અર્બન માટે અર્બન ની ગાઈડલાઈન મુજબ ચુકવવાનાં રેહશે) </item>
+        <item>શહેરી વિસ્તારની JSYના સગર્ભાની રાજય સરકારની આરોગ્ય સંસ્થા તથા ગ્રાન્ટ ઇન એઇડ સંસ્થામાં તેની પ્રસુતિ થાય તે માટે </item>
+        <item>પ્રજનન વયની મહિલાઓ (‌બિન સગર્ભા અને સ્તનપાન કરાવતી સ્ત્રીઓ ૨૦ થી ૪૯ વર્ષ)ને એકત્રિત કરી આયર્નની ગોળી ખવડાવવા માટે </item>
+        <item>રાષ્ટ્રીય આયર્ન પ્લસ ઇનિઇશિએટિવ પ્રોગ્રામ અંતગર્ત ૦૬-૫૯ માસના બાળકોનુ મોબીલાઈઝેસન કરી આયર્નની સિરપ આપવા માટે </item>
+    </string-array>
 </resources>

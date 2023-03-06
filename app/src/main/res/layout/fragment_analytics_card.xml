@@ -5,28 +5,26 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:gravity="center"
     tools:context=".fragments.AnalyticsCard">
 
     <!-- TODO: Update blank fragment layout -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/_10sdp"
+        android:layout_marginStart="@dimen/_10sdp"
         android:layout_marginTop="@dimen/_10sdp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
         tools:ignore="UselessParent">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/first_card"
             android:layout_width="@dimen/_160sdp"
             android:layout_height="@dimen/_180sdp"
-            android:layout_marginTop="140dp"
             app:cardCornerRadius="5dp"
-            app:strokeColor="#FFB050"
             app:cardElevation="10dp"
+            app:strokeColor="#FFB050"
             app:strokeWidth="1dp">
 
             <RelativeLayout
@@ -54,7 +52,7 @@
                     android:text="Incentives this month"
                     android:textAlignment="center"
                     android:textColor="@color/black"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     tools:ignore="HardcodedText" />
 
                 <pl.droidsonroids.gif.GifImageView
@@ -75,7 +73,6 @@
             android:layout_width="@dimen/_120sdp"
             android:layout_height="@dimen/_85sdp"
             android:layout_marginStart="@dimen/_11sdp"
-            android:layout_marginTop="140dp"
             android:layout_toEndOf="@+id/first_card"
             app:cardCornerRadius="@dimen/_5sdp"
             app:cardElevation="10dp"

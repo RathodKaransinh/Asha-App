@@ -28,8 +28,6 @@ class CreatePin : AppCompatActivity() {
                     putString("user_pin", pin)
                     apply()
                 }
-
-                sharedPreferences.getString("user_pin", null)?.let { Log.d("pin", it) }
                 startActivity(Intent(this, MainActivity::class.java))
                 finish()
             }
