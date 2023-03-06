@@ -5,6 +5,8 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -17,15 +19,15 @@ import com.example.ashaapp.fragments.AnalyticsCard
 import com.example.ashaapp.fragments.ProfileFragment
 import com.example.ashaapp.room.notapprovedschemes.NotApprovedSchemesDAO
 import com.example.ashaapp.room.notapprovedschemes.NotApprovedSchemesDB
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import java.util.ArrayList
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var db: FirebaseFirestore
     private lateinit var notApprovedSchemesDAO: NotApprovedSchemesDAO
-    val db = Firebase.firestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,8 +36,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(view)
         setSupportActionBar(binding.toolbar)
 
-        val notApprovedSchemesDB = NotApprovedSchemesDB.getDatabase(this)
-        notApprovedSchemesDAO = notApprovedSchemesDB.dao()
+        initDB()
 
         val offlineSchemes = notApprovedSchemesDAO.offlineSchemes()
 
@@ -49,10 +50,8 @@ class MainActivity : AppCompatActivity() {
                             Log.d("not_app", (it.data?.get("notapproved") as ArrayList<Map<String, Any>>).toString())
                             val notApproved =
                                 it.data?.get("notapproved") as ArrayList<Map<String, Any>>
-                            if (offlineSchemes != null) {
-                                for (scheme in offlineSchemes){
-                                    notApproved.add(hashMapOf("name" to scheme.req_scheme_name, "time" to scheme.req_date, "value" to scheme.value_of_schemes))
-                                }
+                            for (scheme in offlineSchemes){
+                                notApproved.add(hashMapOf("name" to scheme.req_scheme_name, "time" to scheme.req_date, "value" to scheme.value_of_schemes))
                             }
                             db.collection("user_incentives").document("1")
                                 .update("notapproved", notApproved)
@@ -84,7 +83,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.profile_page -> {
-                    loadFragment(ProfileFragment())
+                    loadFragmentWithBackStackEnabled(ProfileFragment())
                     true
                 }
                 else -> false
@@ -96,10 +95,25 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun initDB(){
+        db = Firebase.firestore
+
+        val notApprovedSchemesDB = NotApprovedSchemesDB.getDatabase(this)
+        notApprovedSchemesDAO = notApprovedSchemesDB.dao()
+    }
+
     private fun loadFragment(fragment: Fragment) {
         val fm: FragmentManager = supportFragmentManager
         val ft: FragmentTransaction = fm.beginTransaction()
-        ft.replace(R.id.container, fragment)
+        ft.replace(R.id.container, fragment, "fragment")
+        ft.commit()
+    }
+
+    private fun loadFragmentWithBackStackEnabled(fragment: Fragment) {
+        val fm: FragmentManager = supportFragmentManager
+        val ft: FragmentTransaction = fm.beginTransaction()
+        ft.replace(R.id.container, fragment, "fragment")
+        ft.addToBackStack("fragment")
         ft.commit()
     }
 
@@ -108,5 +122,20 @@ class MainActivity : AppCompatActivity() {
             getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetworkInfo = connectivityManager.activeNetworkInfo
         return activeNetworkInfo != null && activeNetworkInfo.isConnected
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.top_app_bar,menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.approved -> {
+            startActivity(Intent(this, ApprovedIncentivesActivity::class.java))
+            true
+        }
+        else -> {
+            super.onOptionsItemSelected(item)
+        }
     }
 }

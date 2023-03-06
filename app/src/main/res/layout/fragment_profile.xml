@@ -71,7 +71,6 @@
         android:layout_marginBottom="80dp"
         android:background="#A1A7D7ED"
         android:scrollbarStyle="insideInset">
-
     </ScrollView>
 
     <TextView
@@ -91,7 +90,10 @@
         android:layout_alignStart="@+id/ProfileRecentSV"
         android:layout_alignTop="@+id/ProfileRecentSV"
         android:layout_alignEnd="@+id/ProfileRecentSV"
-        android:layout_margin="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
         android:ems="10"
         android:inputType="textPersonName"
         android:text="Himmatnagar"
@@ -169,5 +171,13 @@
         android:text="Logout"
         app:iconTint="#C6E5F3"
         app:rippleColor="#C6E5F3" />
+
+    <ProgressBar
+        android:id="@+id/profileProgressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:layout_marginTop="@dimen/_250sdp"/>
 
 </RelativeLayout>

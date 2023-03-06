@@ -1,6 +1,5 @@
 package com.example.ashaapp.fragments
 
-import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -27,7 +27,7 @@ class ProfileFragment : Fragment(), RefreshProfile {
     private lateinit var textViewDistrict: TextView
     private lateinit var logoutButton: Button
     private lateinit var editButton: Button
-    private lateinit var progressDialog: ProgressDialog
+    private lateinit var progressBar: ProgressBar
     private val auth = Firebase.auth
     private val uid = auth.uid!!
     private val db = Firebase.firestore
@@ -56,8 +56,7 @@ class ProfileFragment : Fragment(), RefreshProfile {
     }
 
     private fun loadProfileFromFirebase() {
-        showProgressDialog()
-
+        progressBar.visibility = View.VISIBLE
         db.collection("user_profiles").document(uid)
             .get()
             .addOnSuccessListener { document ->
@@ -67,20 +66,12 @@ class ProfileFragment : Fragment(), RefreshProfile {
                 textViewDistrict.text = userProfile.district
                 if(userProfile.name?.length==0) textViewImage.text = ""
                 else textViewImage.text = userProfile.name?.substring(0,1)
-                progressDialog.dismiss()
+                progressBar.visibility = View.INVISIBLE
             }
             .addOnFailureListener { exception ->
                 Log.d("user", "Error getting documents: ", exception)
-                progressDialog.dismiss()
+                progressBar.visibility = View.INVISIBLE
             }
-        progressDialog.dismiss()
-    }
-
-    private fun showProgressDialog() {
-        progressDialog = ProgressDialog(context)
-        progressDialog.setTitle("Fetching Details...")
-        progressDialog.setMessage("Updating profile, please wait")
-        progressDialog.show()
     }
 
     private fun initUI(view: View){
@@ -89,6 +80,7 @@ class ProfileFragment : Fragment(), RefreshProfile {
         textViewImage = view.findViewById(R.id.profileImage)
         textViewDistrict = view.findViewById(R.id.profileDistrict)
         editButton = view.findViewById(R.id.profileEditButton)
+        progressBar =view.findViewById(R.id.profileProgressBar)
     }
 
     private fun logout() {

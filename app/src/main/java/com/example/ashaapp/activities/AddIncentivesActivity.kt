@@ -113,10 +113,6 @@ class AddIncentivesActivity : AppCompatActivity(){
             }
         }
 
-        binding.approvedList.setOnClickListener {
-            startActivity(Intent(this, ApprovedIncentivesActivity::class.java))
-        }
-
         binding.addService.setOnClickListener{
             val dialog = BottomSheetFragment(isNetworkAvailable())
             dialog.show(supportFragmentManager, dialog.tag)

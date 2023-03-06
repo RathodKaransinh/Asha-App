@@ -6,13 +6,27 @@
     android:layout_height="match_parent"
     tools:context=".activities.ApprovedIncentivesActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/approved_rv"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/approvedToolbar"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="25dp"
+        app:title="Approved Incentives"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#ffffff"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/approvedList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/approvedToolbar" />
 </androidx.constraintlayout.widget.ConstraintLayout>
