@@ -1,12 +1,9 @@
 package com.example.ashaapp.activities
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.OnBackPressedDispatcher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,16 +12,12 @@ import com.example.ashaapp.adapters.adapter_rv
 import com.example.ashaapp.room.approvedschemes.ApprovedSchemesDAO
 import com.example.ashaapp.room.approvedschemes.ApprovedSchemesDB
 import com.example.ashaapp.room.approvedschemes.ApprovedSchemesEntity
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 
 class ApprovedIncentivesActivity : AppCompatActivity() {
 
     private lateinit var approvedRecyclerView: RecyclerView
     var data: ArrayList<ApprovedSchemesEntity>? = null
     private lateinit var adapter: adapter_rv
-    private lateinit var db: FirebaseFirestore
     private lateinit var approvedSchemesDAO: ApprovedSchemesDAO
 
     @SuppressLint("NotifyDataSetChanged")
@@ -37,8 +30,6 @@ class ApprovedIncentivesActivity : AppCompatActivity() {
 
         val approvedSchemesDB = ApprovedSchemesDB.getDatabase(this)
         approvedSchemesDAO = approvedSchemesDB.dao()
-
-        db = Firebase.firestore
 
         approvedRecyclerView = findViewById(R.id.approvedList)
 

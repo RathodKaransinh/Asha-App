@@ -19,15 +19,20 @@ import com.example.ashaapp.fragments.AnalyticsCard
 import com.example.ashaapp.fragments.ProfileFragment
 import com.example.ashaapp.room.notapprovedschemes.NotApprovedSchemesDAO
 import com.example.ashaapp.room.notapprovedschemes.NotApprovedSchemesDB
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var db: FirebaseFirestore
     private lateinit var notApprovedSchemesDAO: NotApprovedSchemesDAO
+    private val uid = Firebase.auth.uid
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +43,13 @@ class MainActivity : AppCompatActivity() {
 
         initDB()
 
+        val calendar: Calendar = Calendar.getInstance()
+        val yearDateFormat = SimpleDateFormat("yyyy", Locale.US)
+        val currentYear = yearDateFormat.format(calendar.time)
+
+        val monthDateFormat = SimpleDateFormat("MMM", Locale.US)
+        val currentMonth = monthDateFormat.format(calendar.time)
+
         val offlineSchemes = notApprovedSchemesDAO.offlineSchemes()
 
         if (offlineSchemes != null) {
@@ -45,16 +57,16 @@ class MainActivity : AppCompatActivity() {
                 if (isNetworkAvailable()) {
                     binding.container.visibility = View.INVISIBLE
                     binding.mainProgressBar.visibility = View.VISIBLE
-                    db.collection("user_incentives").document("1")
+                    db.collection(currentYear).document(currentMonth).collection("users").document(uid!!)
                         .get().addOnSuccessListener {
-                            Log.d("not_app", (it.data?.get("notapproved") as ArrayList<Map<String, Any>>).toString())
+                            Log.d("not_app", (it.data?.get("notApproved") as ArrayList<Map<String, Any>>).toString())
                             val notApproved =
-                                it.data?.get("notapproved") as ArrayList<Map<String, Any>>
+                                it.data?.get("notApproved") as ArrayList<Map<String, Any>>
                             for (scheme in offlineSchemes){
                                 notApproved.add(hashMapOf("name" to scheme.req_scheme_name, "time" to scheme.req_date, "value" to scheme.value_of_schemes))
                             }
-                            db.collection("user_incentives").document("1")
-                                .update("notapproved", notApproved)
+                            db.collection(currentYear).document(currentMonth).collection("users").document(uid)
+                                .update("notApproved", notApproved)
                                 .addOnSuccessListener {
                                     Toast.makeText(view.context, "Offline Data Updated Successfully", Toast.LENGTH_LONG).show()
                                     notApprovedSchemesDAO.updatestate()

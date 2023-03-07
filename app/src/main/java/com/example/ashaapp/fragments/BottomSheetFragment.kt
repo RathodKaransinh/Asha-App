@@ -16,6 +16,7 @@ import com.example.ashaapp.room.notapprovedschemes.NotApprovedSchemesDAO
 import com.example.ashaapp.room.notapprovedschemes.NotApprovedSchemesDB
 import com.example.ashaapp.room.notapprovedschemes.NotApprovedSchemesEntity
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -29,6 +30,7 @@ class BottomSheetFragment     // Required empty public constructor
     private lateinit var db: FirebaseFirestore
     private lateinit var allSchemesDAO: AllSchemesDAO
     private lateinit var notApprovedSchemesDAO: NotApprovedSchemesDAO
+    private val uid = Firebase.auth.uid
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,6 +38,14 @@ class BottomSheetFragment     // Required empty public constructor
     ): View {
         // Inflate the layout for this fragment
         val view: View = inflater.inflate(R.layout.fragment_bottom_sheet, container, false)
+
+        val calendar: Calendar = Calendar.getInstance()
+        val yearDateFormat = SimpleDateFormat("yyyy", Locale.US)
+        val currentYear = yearDateFormat.format(calendar.time)
+
+        val monthDateFormat = SimpleDateFormat("MMM", Locale.US)
+        val currentMonth = monthDateFormat.format(calendar.time)
+
         val allSchemesDB = context?.let { AllSchemesDB.getDatabase(it) }
         if (allSchemesDB != null) {
             allSchemesDAO = allSchemesDB.dao()
@@ -78,14 +88,10 @@ class BottomSheetFragment     // Required empty public constructor
                 )
             )
             if (isneton) {
-                db.collection("user_incentives").document("1")
+                db.collection(currentYear).document(currentMonth).collection("users").document(uid!!)
                     .get().addOnSuccessListener {
-                        Log.d(
-                            "not_app",
-                            (it.data?.get("notapproved") as ArrayList<Map<String, Any>>).toString()
-                        )
                         val notApproved =
-                            it.data?.get("notapproved") as ArrayList<Map<String, Any>>
+                            it.data?.get("notApproved") as ArrayList<Map<String, Any>>
                         notApproved.add(
                             hashMapOf(
                                 "name" to schemeName,
@@ -93,8 +99,8 @@ class BottomSheetFragment     // Required empty public constructor
                                 "value" to value
                             )
                         )
-                        db.collection("user_incentives").document("1")
-                            .update("notapproved", notApproved)
+                        db.collection(currentYear).document(currentMonth).collection("users").document(uid)
+                            .update("notApproved", notApproved)
                             .addOnSuccessListener {
                                 Toast.makeText(
                                     view.context,

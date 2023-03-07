@@ -60,7 +60,6 @@ class ProfileFragment : Fragment(), RefreshProfile {
         db.collection("user_profiles").document(uid)
             .get()
             .addOnSuccessListener { document ->
-                Log.d("user", "${document.id} => ${document.data}")
                 userProfile = document.toObject<UserProfile>()!!
                 textViewName.text = userProfile.name
                 textViewDistrict.text = userProfile.district
