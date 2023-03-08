@@ -27,8 +27,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp">
+        android:padding="@dimen/_5sdp">
 
         <TextView
             android:layout_width="match_parent"

@@ -20,4 +20,7 @@ interface AllSchemesDAO {
 
     @Query("DELETE FROM AllSchemesEntity")
     fun truncate()
+
+    @Query("SELECT schemes_absolute_name FROM AllSchemesEntity where schemes_code_ab=:code")
+    fun filterSchemesWithCode(code: String) : List<String>
 }

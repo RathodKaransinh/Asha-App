@@ -6,65 +6,61 @@
     android:layout_height="match_parent"
     tools:context=".fragments.BottomSheetFragment">
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-       <com.google.android.material.textfield.TextInputLayout
-           style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:layout_marginStart="10dp"
-           android:layout_marginTop="40dp"
-           android:layout_marginEnd="10dp"
-           app:layout_constraintEnd_toEndOf="parent"
-           app:layout_constraintStart_toStartOf="parent"
-           app:layout_constraintTop_toTopOf="parent"
+        <AutoCompleteTextView
+            android:id="@+id/scheme_code"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/scheme_code"
+            android:inputType="none"
+            android:labelFor="@+id/textInputLayout"
+            android:text="" />
 
-           >
+    </com.google.android.material.textfield.TextInputLayout>
 
-           <AutoCompleteTextView
-               android:id="@+id/scheme_code"
-               android:layout_width="match_parent"
-               android:layout_height="match_parent"
-               android:inputType="none"
-               android:text=""/>
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/scheme_name_container"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="110dp"
+        android:layout_marginEnd="10dp"
+        android:maxWidth="200dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-       </com.google.android.material.textfield.TextInputLayout>
+        <AutoCompleteTextView
+            android:id="@+id/scheme"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="none"
+            android:hint="@string/scheme_name"
+            android:labelFor="@+id/scheme_name_container"
+            android:maxWidth="200dp"
+            android:text="" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-       <com.google.android.material.textfield.TextInputLayout
-           style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:layout_marginStart="10dp"
-           android:layout_marginTop="110dp"
-           android:layout_marginEnd="10dp"
-           android:maxWidth="200dp"
-           android:id="@+id/scheme_name_container"
-           app:layout_constraintEnd_toEndOf="parent"
-           app:layout_constraintStart_toStartOf="parent"
-           app:layout_constraintTop_toTopOf="parent"
-
-           >
-
-           <AutoCompleteTextView
-               android:id="@+id/scheme"
-               android:layout_width="match_parent"
-               android:layout_height="match_parent"
-               android:inputType="none"
-               android:maxWidth="200dp"
-               android:text="" />
-       </com.google.android.material.textfield.TextInputLayout>
-
-       <Button
-           android:id="@+id/button"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:text="Submit"
-           app:layout_constraintTop_toBottomOf="@id/scheme_name_container"
-           app:layout_constraintBottom_toBottomOf="parent"
-           app:layout_constraintEnd_toEndOf="parent"
-           app:layout_constraintStart_toStartOf="parent"
-           />
-
-
-
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/submit"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/scheme_name_container" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
