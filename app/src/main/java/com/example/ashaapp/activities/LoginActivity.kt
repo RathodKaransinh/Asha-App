@@ -85,6 +85,7 @@ class LoginActivity : AppCompatActivity() {
         } else {
             binding.bookIconImageView.visibility = View.GONE
             binding.afterAnimationView.visibility = View.GONE
+            binding.loginWave1.visibility = View.GONE
             binding.loginProgressBar.visibility = View.VISIBLE
             auth.signInWithEmailAndPassword(binding.loginTextEmailAddress.text.toString(), binding.loginTextPassword.text.toString())
                 .addOnCompleteListener(this) {
@@ -105,6 +106,7 @@ class LoginActivity : AppCompatActivity() {
                         binding.loginProgressBar.visibility = View.GONE
                         binding.bookIconImageView.visibility = View.VISIBLE
                         binding.afterAnimationView.visibility = View.VISIBLE
+                        binding.loginWave1.visibility = View.VISIBLE
                         Toast.makeText(
                             baseContext, it.exception?.message,
                             Toast.LENGTH_SHORT
@@ -126,6 +128,7 @@ class LoginActivity : AppCompatActivity() {
 
             override fun onAnimationEnd(animation: Animator) {
                 binding.afterAnimationView.visibility = View.VISIBLE
+                binding.loginWave1.visibility = View.VISIBLE
             }
 
             override fun onAnimationCancel(animation: Animator) {
