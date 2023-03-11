@@ -1,6 +1,7 @@
 package com.example.ashaapp.fragments
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,6 +11,7 @@ import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import android.content.Context
 import androidx.fragment.app.Fragment
 import com.example.ashaapp.R
 import com.example.ashaapp.activities.LoginActivity
@@ -28,6 +30,7 @@ class ProfileFragment : Fragment(), RefreshProfile {
     private lateinit var logoutButton: Button
     private lateinit var editButton: Button
     private lateinit var progressBar: ProgressBar
+    private lateinit var sharedPreferences: SharedPreferences
     private val auth = Firebase.auth
     private val uid = auth.uid!!
     private val db = Firebase.firestore
@@ -44,7 +47,7 @@ class ProfileFragment : Fragment(), RefreshProfile {
 
         loadProfileFromFirebase()
 
-        logoutButton.setOnClickListener{
+        logoutButton.setOnClickListener {
             logout()
         }
 
@@ -63,8 +66,8 @@ class ProfileFragment : Fragment(), RefreshProfile {
                 userProfile = document.toObject<UserProfile>()!!
                 textViewName.text = userProfile.name
                 textViewDistrict.text = userProfile.district
-                if(userProfile.name?.length==0) textViewImage.text = ""
-                else textViewImage.text = userProfile.name?.substring(0,1)
+                if (userProfile.name?.length == 0) textViewImage.text = ""
+                else textViewImage.text = userProfile.name?.substring(0, 1)
                 progressBar.visibility = View.INVISIBLE
             }
             .addOnFailureListener { exception ->
@@ -73,16 +76,23 @@ class ProfileFragment : Fragment(), RefreshProfile {
             }
     }
 
-    private fun initUI(view: View){
+    private fun initUI(view: View) {
         textViewName = view.findViewById(R.id.profileName)
         logoutButton = view.findViewById(R.id.profileLogOutButton)
         textViewImage = view.findViewById(R.id.profileImage)
         textViewDistrict = view.findViewById(R.id.profileDistrict)
         editButton = view.findViewById(R.id.profileEditButton)
-        progressBar =view.findViewById(R.id.profileProgressBar)
+        progressBar = view.findViewById(R.id.profileProgressBar)
+        sharedPreferences =
+            requireActivity().getSharedPreferences("preference", Context.MODE_PRIVATE)
     }
 
     private fun logout() {
+        sharedPreferences.edit().apply {
+            putString("password", null)
+            putString("user_pin", null)
+            apply()
+        }
         auth.signOut()
         startActivity(Intent(context, LoginActivity::class.java))
         Toast.makeText(context, "Logged out successfully", Toast.LENGTH_SHORT).show()

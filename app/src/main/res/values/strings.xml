@@ -38,4 +38,14 @@
     <string name="asha_name">Asha Name</string>
     <string name="contact_number">Contact number</string>
     <string name="edit">Edit</string>
+    <string name="title_activity_splash_screen">SplashScreenActivity</string>
+
+    <string name="booki">BookI</string>
+    <string name="welcome_back">Welcome Back</string>
+    <string name="read_it_together">Read it together</string>
+    <string name="skip">Skip</string>
+    <string name="sign_up">Sign up</string>
+    <string name="forget_password">Forget Password.?</string>
+    <string name="welcome">Welcome</string>
+    <string name="login_to_continue">Login to continue</string>
 </resources>

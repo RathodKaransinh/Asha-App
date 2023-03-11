@@ -86,7 +86,6 @@ class MainActivity : AppCompatActivity() {
                                             )
                                         )
                                     }
-                                    Toast.makeText(this, "Schemes Updated Successfully", Toast.LENGTH_SHORT).show()
                                 }
                             }
                         db.collection(currentYear).document(currentMonth).collection("users")
@@ -129,7 +128,11 @@ class MainActivity : AppCompatActivity() {
                                         )
                                     }
                                 }
-                                Toast.makeText(this, "Approved Schemes Updated Successfully", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    this,
+                                    "Schemes Updated Successfully",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         db.collection(currentYear).document(currentMonth).collection("users")
                             .document(uid).update("areApprovedSchemesUpdated", true)
