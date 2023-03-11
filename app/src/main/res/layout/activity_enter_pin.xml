@@ -31,21 +31,19 @@
 
         <TextView
             android:id="@+id/textViewEnterPin"
-            style="@style/TextAppearance.AppCompat.Headline"
+            style="@style/TextAppearance.Material3.HeadlineMedium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:text="Enter a 4 digit pin"
-            android:textColor="@color/purple_500" />
+            android:text="@string/enter_a_4_digit_pin"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/enterPinTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="@dimen/_8sdp"
             android:autofillHints=""
             android:ems="10"
-            android:hint="Enter pin"
             android:minHeight="48dp"
             app:endIconMode="password_toggle">
 
@@ -53,6 +51,8 @@
                 android:id="@+id/enterPinEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/enter_pin"
+                android:labelFor="@+id/enterPinTextInputLayout"
                 android:inputType="numberPassword" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -62,17 +62,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:text="Forgot pin? Enter using password"/>
+            android:text="@string/forgot_pin_enter_using_password"/>
+
         <Button
             android:id="@+id/enterPinButton"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="150dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginEnd="50dp"
-            android:text="Enter"
+            android:layout_marginTop="@dimen/_18sdp"
+            android:text="@string/enter"
             android:textAllCaps="false"
-            android:textSize="18sp" />
+            android:textSize="22sp" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

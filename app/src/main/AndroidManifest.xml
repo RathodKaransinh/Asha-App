@@ -12,7 +12,7 @@
         android:icon="@mipmap/asha_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AshaApp"
+        android:theme="@style/Theme.Material3.DayNight.NoActionBar"
         tools:targetApi="31">
         <activity
             android:name=".activities.ApprovedIncentivesActivity"

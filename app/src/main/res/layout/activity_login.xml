@@ -5,6 +5,7 @@
     android:layout_height="match_parent">
 
     <ImageView
+        android:id="@+id/imageView3"
         android:layout_width="0dp"
         android:layout_height="200dp"
         android:contentDescription="@string/todo"
@@ -14,6 +15,7 @@
         app:srcCompat="@drawable/wave__2_" />
 
     <ImageView
+        android:id="@+id/imageView4"
         android:layout_width="0dp"
         android:layout_height="200dp"
         android:contentDescription="@string/todo"
@@ -23,68 +25,75 @@
         app:srcCompat="@drawable/wave__1_" />
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:id="@+id/linearLayout2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="@dimen/_5sdp">
+        android:padding="@dimen/_5sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
+            style="@style/TextAppearance.Material3.HeadlineMedium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/loginHead"
-            style="@style/TextAppearance.AppCompat.Headline"
-            android:textColor="@color/purple_500"
-            android:layout_marginBottom="24dp"/>
+            android:layout_marginBottom="24dp"
+            android:maxWidth="@dimen/_300sdp"
+            android:text="@string/loginHead" />
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/loginEmailTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:ems="10"
-            android:hint="Email"
-            android:minHeight="48dp"
             android:autofillHints=""
+            android:ems="10"
+            android:minHeight="48dp"
             app:endIconMode="clear_text">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/loginTextEmailAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/email"
                 android:inputType="textEmailAddress"
-                />
+                android:labelFor="@id/loginEmailTextInputLayout"
+                android:minHeight="@dimen/_48sdp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/loginPasswordTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:ems="10"
-            android:hint="Password"
-            android:minHeight="48dp"
             android:autofillHints=""
+            android:ems="10"
+            android:minHeight="48dp"
             app:endIconMode="password_toggle">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/loginTextPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/password"
                 android:inputType="textPassword"
-                />
+                android:labelFor="@id/loginPasswordTextInputLayout"
+                android:minHeight="@dimen/_48sdp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/loginbtn"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="150dp"
-            android:layout_marginEnd="50dp"
             android:layout_marginTop="30dp"
-            android:text="Login"
+            android:text="@string/login"
             android:textAllCaps="false"
-            android:textSize="18sp" />
+            android:textSize="22sp" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

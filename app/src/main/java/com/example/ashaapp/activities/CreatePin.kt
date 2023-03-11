@@ -42,8 +42,18 @@ class CreatePin : AppCompatActivity() {
         db.collection(currentYear).document(currentMonth).collection("users").document(uid!!)
             .addSnapshotListener { value, error ->
                 if (value!!.exists()) {
-                    binding.linearLayout.visibility = View.VISIBLE
-                    binding.createUserProgressBar.visibility = View.INVISIBLE
+                    db.collection(currentYear).document(currentMonth).collection("users")
+                        .document(uid)
+                        .update("areSchemesUpdated", false, "areApprovedSchemesUpdated", false)
+                        .addOnSuccessListener {
+                            binding.linearLayout.visibility = View.VISIBLE
+                            binding.createUserProgressBar.visibility = View.INVISIBLE
+                        }
+                        .addOnFailureListener {
+                            binding.linearLayout.visibility = View.VISIBLE
+                            binding.createUserProgressBar.visibility = View.INVISIBLE
+                            Log.d("error", it.toString())
+                        }
                 } else {
                     db.collection(currentYear).document(currentMonth).collection("users")
                         .document(uid)

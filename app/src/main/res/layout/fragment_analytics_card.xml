@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:gravity="center"
+    android:orientation="vertical"
     tools:context=".fragments.AnalyticsCard">
 
     <!-- TODO: Update blank fragment layout -->
@@ -24,7 +24,6 @@
             android:layout_height="@dimen/_180sdp"
             app:cardCornerRadius="5dp"
             app:cardElevation="10dp"
-            app:strokeColor="#FFB050"
             app:strokeWidth="1dp">
 
             <RelativeLayout
@@ -38,8 +37,7 @@
                     android:paddingTop="@dimen/_55sdp"
                     android:text="1200"
                     android:textAlignment="center"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/_20sdp"
+                    android:textSize="@dimen/_20ssp"
                     android:textStyle="bold"
                     tools:ignore="HardcodedText" />
 
@@ -51,7 +49,6 @@
                     android:paddingTop="@dimen/_5sdp"
                     android:text="Incentives this month"
                     android:textAlignment="center"
-                    android:textColor="@color/black"
                     android:textSize="18sp"
                     tools:ignore="HardcodedText" />
 
@@ -76,7 +73,6 @@
             android:layout_toEndOf="@+id/first_card"
             app:cardCornerRadius="@dimen/_5sdp"
             app:cardElevation="10dp"
-            app:strokeColor="@color/black"
             app:strokeWidth="1dp">
 
         </com.google.android.material.card.MaterialCardView>
@@ -91,7 +87,6 @@
             android:layout_toEndOf="@+id/first_card"
             app:cardCornerRadius="@dimen/_5sdp"
             app:cardElevation="10dp"
-            app:strokeColor="@color/black"
             app:strokeWidth="1dp">
 
         </com.google.android.material.card.MaterialCardView>
@@ -104,7 +99,6 @@
             android:layout_marginTop="16dp"
             app:cardCornerRadius="@dimen/_5sdp"
             app:cardElevation="10dp"
-            app:strokeColor="@color/black"
             app:strokeWidth="1dp">
 
         </com.google.android.material.card.MaterialCardView>

@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/imageView3"
         android:layout_width="0dp"
         android:layout_height="200dp"
         android:contentDescription="@string/todo"
@@ -16,7 +14,6 @@
         app:srcCompat="@drawable/wave__2_" />
 
     <ImageView
-        android:id="@+id/imageView"
         android:layout_width="0dp"
         android:layout_height="200dp"
         android:contentDescription="@string/todo"
@@ -31,24 +28,22 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:padding="@dimen/_5sdp"
-        android:orientation="vertical"
-        tools:layout_editor_absoluteX="16dp">
+        android:orientation="vertical">
 
         <TextView
-            style="@style/TextAppearance.AppCompat.Headline"
+            style="@style/TextAppearance.Material3.HeadlineMedium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:text="Create a 4 digit pin"
-            android:textColor="@color/purple_500" />
+            android:text="@string/create_a_4_digit_pin" />
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/createPinTIL"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="@dimen/_30sdp"
             android:autofillHints=""
             android:ems="10"
-            android:hint="Enter pin"
             android:minHeight="48dp"
             app:endIconMode="password_toggle">
 
@@ -56,20 +51,20 @@
                 android:id="@+id/createPinEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:labelFor="@id/createPinTIL"
+                android:hint="@string/enter_pin"
                 android:inputType="numberPassword" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/createPinButton"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="150dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginEnd="50dp"
-            android:text="Create"
+            android:text="@string/create"
             android:textAllCaps="false"
-            android:textSize="18sp" />
+            android:textSize="22sp" />
     </LinearLayout>
 
     <ProgressBar

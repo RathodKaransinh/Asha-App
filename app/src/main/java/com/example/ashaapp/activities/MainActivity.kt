@@ -32,7 +32,6 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity() {
 
@@ -50,7 +49,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        setSupportActionBar(binding.toolbar)
+        setSupportActionBar(binding.mainTopAppBar)
 
         initDB()
 
@@ -62,74 +61,123 @@ class MainActivity : AppCompatActivity() {
         val currentMonth = monthDateFormat.format(calendar.time)
 
         if (isNetworkAvailable()) {
+            binding.container.visibility = View.INVISIBLE
+            binding.mainProgressBar.visibility = View.VISIBLE
             db.collection(currentYear).document(currentMonth).collection("users").document(uid!!)
                 .get()
-                .addOnSuccessListener{
+                .addOnSuccessListener {
                     areSchemesUpdated = it.get("areSchemesUpdated") as Boolean
                     areApprovedSchemesUpdated = it.get("areApprovedSchemesUpdated") as Boolean
 
-                    if (!areSchemesUpdated){
+                    if (!areSchemesUpdated) {
                         allSchemesDAO.truncate()
                         db.collection("services")
-                            .get().addOnSuccessListener{ codes ->
-                                for (code in codes){
-                                    val schemesList = code.data["schemes"] as java.util.ArrayList<Map<String, Any>>
-                                    for (scheme in schemesList){
-                                        allSchemesDAO.insert(AllSchemesEntity(0, code.id, scheme["name"] as String, scheme["value"] as Long))
+                            .get().addOnSuccessListener { codes ->
+                                for (code in codes) {
+                                    val schemesList =
+                                        code.data["schemes"] as ArrayList<Map<String, Any>>
+                                    for (scheme in schemesList) {
+                                        allSchemesDAO.insert(
+                                            AllSchemesEntity(
+                                                0,
+                                                code.id,
+                                                scheme["name"] as String,
+                                                scheme["value"] as Long
+                                            )
+                                        )
                                     }
+                                    Toast.makeText(this, "Schemes Updated Successfully", Toast.LENGTH_SHORT).show()
                                 }
                             }
-                        db.collection(currentYear).document(currentMonth).collection("users").document(uid).update("areSchemesUpdated", true)
+                        db.collection(currentYear).document(currentMonth).collection("users")
+                            .document(uid).update("areSchemesUpdated", true)
                         areSchemesUpdated = true
                     }
 
-                    if (!areApprovedSchemesUpdated){
+                    if (!areApprovedSchemesUpdated) {
                         notApprovedSchemesDAO.deleteOnlineSchemes()
                         approvedSchemesDAO.truncate()
-                        db.collection(currentYear).document(currentMonth).collection("users").document(uid)
-                            .get().addOnSuccessListener{ doc ->
+                        db.collection(currentYear).document(currentMonth).collection("users")
+                            .document(uid)
+                            .get().addOnSuccessListener { doc ->
                                 val approved =
-                                    doc.data?.get("approved") as java.util.ArrayList<Map<String, Any>>?
+                                    doc.data?.get("approved") as ArrayList<Map<String, Any>>?
                                 val notApproved =
-                                    doc.data?.get("notApproved") as java.util.ArrayList<Map<String, Any>>?
-                                if (approved!=null){
-                                    for(scheme in approved){
-                                        approvedSchemesDAO.insert(ApprovedSchemesEntity(0, scheme["name"] as String, scheme["time"] as String, scheme["value"] as Long))
+                                    doc.data?.get("notApproved") as ArrayList<Map<String, Any>>?
+                                if (approved != null) {
+                                    for (scheme in approved) {
+                                        approvedSchemesDAO.insert(
+                                            ApprovedSchemesEntity(
+                                                0,
+                                                scheme["name"] as String,
+                                                scheme["time"] as String,
+                                                scheme["value"] as Long
+                                            )
+                                        )
                                     }
                                 }
-                                if (notApproved!=null){
-                                    for(scheme in notApproved){
-                                        notApprovedSchemesDAO.insert(NotApprovedSchemesEntity(0, scheme["name"] as String, scheme["time"] as String, scheme["value"] as Long, true))
+                                if (notApproved != null) {
+                                    for (scheme in notApproved) {
+                                        notApprovedSchemesDAO.insert(
+                                            NotApprovedSchemesEntity(
+                                                0,
+                                                scheme["name"] as String,
+                                                scheme["time"] as String,
+                                                scheme["value"] as Long,
+                                                true
+                                            )
+                                        )
                                     }
                                 }
+                                Toast.makeText(this, "Approved Schemes Updated Successfully", Toast.LENGTH_SHORT).show()
                             }
-                        db.collection(currentYear).document(currentMonth).collection("users").document(uid).update("areApprovedSchemesUpdated", true)
+                        db.collection(currentYear).document(currentMonth).collection("users")
+                            .document(uid).update("areApprovedSchemesUpdated", true)
                     }
+                    binding.mainProgressBar.visibility = View.INVISIBLE
+                    binding.container.visibility = View.VISIBLE
                 }
                 .addOnFailureListener {
                     Toast.makeText(this, "Failed to update flags", Toast.LENGTH_SHORT).show()
+                    binding.mainProgressBar.visibility = View.INVISIBLE
+                    binding.container.visibility = View.VISIBLE
                 }
         }
 
         val offlineSchemes = notApprovedSchemesDAO.offlineSchemes()
 
         if (offlineSchemes != null) {
-            if (offlineSchemes.isNotEmpty()){
+            if (offlineSchemes.isNotEmpty()) {
                 if (isNetworkAvailable()) {
                     binding.container.visibility = View.INVISIBLE
                     binding.mainProgressBar.visibility = View.VISIBLE
-                    db.collection(currentYear).document(currentMonth).collection("users").document(uid!!)
+                    db.collection(currentYear).document(currentMonth).collection("users")
+                        .document(uid!!)
                         .get().addOnSuccessListener {
-                            Log.d("not_app", (it.data?.get("notApproved") as ArrayList<Map<String, Any>>).toString())
+                            Log.d(
+                                "not_app",
+                                (it.data?.get("notApproved") as ArrayList<Map<String, Any>>).toString()
+                            )
                             val notApproved =
                                 it.data?.get("notApproved") as ArrayList<Map<String, Any>>
-                            for (scheme in offlineSchemes){
-                                notApproved.add(hashMapOf("name" to scheme.req_scheme_name, "time" to scheme.req_date, "value" to scheme.value_of_schemes))
+                            for (scheme in offlineSchemes) {
+                                notApproved.add(
+                                    hashMapOf(
+                                        "name" to scheme.req_scheme_name,
+                                        "time" to scheme.req_date,
+                                        "value" to scheme.value_of_schemes
+                                    )
+                                )
                             }
-                            db.collection(currentYear).document(currentMonth).collection("users").document(uid)
+                            db.collection(currentYear).document(currentMonth).collection("users")
+                                .document(uid)
                                 .update("notApproved", notApproved)
                                 .addOnSuccessListener {
-                                    Toast.makeText(view.context, "Offline Data Updated Successfully", Toast.LENGTH_LONG).show()
+                                    Toast.makeText(
+                                        view.context,
+                                        "Offline Data Updated Successfully",
+                                        Toast.LENGTH_LONG
+                                    ).show()
                                     notApprovedSchemesDAO.updatestate()
                                 }
                                 .addOnFailureListener { exception ->
@@ -139,7 +187,11 @@ class MainActivity : AppCompatActivity() {
                             binding.container.visibility = View.VISIBLE
                         }
                         .addOnFailureListener {
-                            Toast.makeText(view.context, "Offline Data Updated UnSuccessfully", Toast.LENGTH_LONG).show()
+                            Toast.makeText(
+                                view.context,
+                                "Offline Data Updated UnSuccessfully",
+                                Toast.LENGTH_LONG
+                            ).show()
                             binding.mainProgressBar.visibility = View.INVISIBLE
                             binding.container.visibility = View.VISIBLE
                         }
@@ -156,7 +208,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.profile_page -> {
-                    loadFragmentWithBackStackEnabled(ProfileFragment())
+                    loadFragment(ProfileFragment())
                     true
                 }
                 else -> false
@@ -168,7 +220,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun initDB(){
+    private fun initDB() {
         db = Firebase.firestore
 
         val allSchemesDB = AllSchemesDB.getDatabase(this)
@@ -188,14 +240,6 @@ class MainActivity : AppCompatActivity() {
         ft.commit()
     }
 
-    private fun loadFragmentWithBackStackEnabled(fragment: Fragment) {
-        val fm: FragmentManager = supportFragmentManager
-        val ft: FragmentTransaction = fm.beginTransaction()
-        ft.replace(R.id.container, fragment, "fragment")
-        ft.addToBackStack("fragment")
-        ft.commit()
-    }
-
     private fun isNetworkAvailable(): Boolean {
         val connectivityManager =
             getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -204,7 +248,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.top_app_bar,menu)
+        menuInflater.inflate(R.menu.top_app_bar, menu)
         return super.onCreateOptionsMenu(menu)
     }
 

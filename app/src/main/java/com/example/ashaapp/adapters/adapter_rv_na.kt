@@ -14,8 +14,8 @@ import com.example.ashaapp.room.notapprovedschemes.NotApprovedSchemesEntity
 class adapter_rv_na(c: Context) :
     RecyclerView.Adapter<adapter_rv_na.MyViewHolder>() {
     var list = ArrayList<NotApprovedSchemesEntity>()
-    var c: Context
-    var fullList = ArrayList<NotApprovedSchemesEntity>()
+    private var c: Context
+    private var fullList = ArrayList<NotApprovedSchemesEntity>()
     init {
         this.c = c
     }

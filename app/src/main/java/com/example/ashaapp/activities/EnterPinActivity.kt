@@ -6,13 +6,10 @@ import android.os.Bundle
 import android.text.InputType
 import android.widget.Toast
 import com.example.ashaapp.databinding.ActivityEnterPinBinding
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 
 class EnterPinActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityEnterPinBinding
-    private val auth = Firebase.auth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +36,7 @@ class EnterPinActivity : AppCompatActivity() {
 
         binding.textViewForgotPin.setOnClickListener {
             binding.textViewEnterPin.text = "Enter your Password"
-            binding.enterPinTextInputLayout.hint = "Enter Password"
+            binding.enterPinEditText.hint = "Enter Password"
             binding.textViewForgotPin.text = "Enter using pin?"
             binding.enterPinEditText.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
             binding.enterPinEditText.text?.clear()

@@ -4,9 +4,8 @@
 
     <item
         android:id="@+id/approved"
-        android:iconTint="@color/black"
         android:icon="@drawable/baseline_check_circle_outline_24"
         android:title="@string/approved"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 
 </menu>

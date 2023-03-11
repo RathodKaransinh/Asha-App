@@ -32,6 +32,10 @@ class BottomSheetFragment     // Required empty public constructor
     private lateinit var scheme_name: AutoCompleteTextView
     private val uid = Firebase.auth.uid
 
+    companion object {
+        const val TAG = "ModalBottomSheet"
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

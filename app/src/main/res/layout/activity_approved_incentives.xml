@@ -6,20 +6,21 @@
     android:layout_height="match_parent"
     tools:context=".activities.ApprovedIncentivesActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/approvedToolbar"
-        android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/approvedAppBarLayout"
         android:layout_width="match_parent"
-        app:title="Approved Incentives"
-        android:layout_height="?attr/actionBarSize"
-        android:background="#ffffff"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-    </androidx.appcompat.widget.Toolbar>
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/approvedToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="Approved Incentives" />
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/approvedList"
@@ -28,5 +29,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/approvedToolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/approvedAppBarLayout" />
 </androidx.constraintlayout.widget.ConstraintLayout>

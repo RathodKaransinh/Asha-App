@@ -6,16 +6,15 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.ashaapp.R
 import com.example.ashaapp.adapters.adapter_rv
+import com.example.ashaapp.databinding.ActivityApprovedIncentivesBinding
 import com.example.ashaapp.room.approvedschemes.ApprovedSchemesDAO
 import com.example.ashaapp.room.approvedschemes.ApprovedSchemesDB
 import com.example.ashaapp.room.approvedschemes.ApprovedSchemesEntity
 
 class ApprovedIncentivesActivity : AppCompatActivity() {
 
-    private lateinit var approvedRecyclerView: RecyclerView
+    private lateinit var binding: ActivityApprovedIncentivesBinding
     var data: ArrayList<ApprovedSchemesEntity>? = null
     private lateinit var adapter: adapter_rv
     private lateinit var approvedSchemesDAO: ApprovedSchemesDAO
@@ -23,23 +22,22 @@ class ApprovedIncentivesActivity : AppCompatActivity() {
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_approved_incentives)
-        val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.approvedToolbar)
-        setSupportActionBar(toolbar)
+        binding = ActivityApprovedIncentivesBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+        setSupportActionBar(binding.approvedToolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val approvedSchemesDB = ApprovedSchemesDB.getDatabase(this)
         approvedSchemesDAO = approvedSchemesDB.dao()
-
-        approvedRecyclerView = findViewById(R.id.approvedList)
 
         data = approvedSchemesDAO.getalldata() as ArrayList<ApprovedSchemesEntity>?
         if (data == null){
             Toast.makeText(this, "Nothing to show!", Toast.LENGTH_SHORT).show()
         } else{
             adapter = adapter_rv(data!!, this)
-            approvedRecyclerView.layoutManager = LinearLayoutManager(this)
-            approvedRecyclerView.adapter = adapter
+            binding.approvedList.layoutManager = LinearLayoutManager(this)
+            binding.approvedList.adapter = adapter
             adapter.notifyDataSetChanged()
         }
     }
