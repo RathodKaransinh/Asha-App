@@ -16,7 +16,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
         android:id="@+id/bookITextView"
@@ -26,7 +26,7 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bookIconImageView" />
+        app:layout_constraintTop_toBottomOf="@+id/bookIconImageView"/>
 
     <ProgressBar
         android:id="@+id/loadingProgressBar"
@@ -123,7 +123,7 @@
     </LinearLayout>
     
     <ImageView
-        android:id="@+id/loginBottomWave"
+        android:id="@+id/loginWave1"
         android:layout_width="0dp"
         android:layout_height="200dp"
         android:contentDescription="@string/todo"
