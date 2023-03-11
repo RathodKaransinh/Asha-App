@@ -121,6 +121,16 @@
             android:textSize="22sp" />
 
     </LinearLayout>
+    
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:contentDescription="@string/todo"
+        android:scaleType="centerCrop"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/wave__1_" />
 
     <ProgressBar
         android:id="@+id/loginProgressBar"
