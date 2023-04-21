@@ -10,18 +10,16 @@
     android:paddingTop="5dp"
     android:paddingBottom="5dp">
 
-    <TextView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/profileImage"
-        style="@style/TextAppearance.Material3.BodyLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_alignParentTop="true"
         android:layout_marginTop="10dp"
-        android:background="@drawable/bg_name"
-        android:gravity="center"
-        android:textSize="@dimen/_20ssp"
-        android:textColor="@color/white"
-        android:text="A" />
+        android:scaleType="centerCrop"
+        android:src="@drawable/baseline_person_24"
+        app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
+        android:contentDescription="@string/todo" />
 
     <TextView
         android:id="@+id/profileName"

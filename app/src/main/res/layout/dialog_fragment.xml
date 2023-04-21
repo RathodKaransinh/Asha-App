@@ -15,6 +15,16 @@
         app:layout_constraintTop_toTopOf="parent"
         android:orientation="vertical">
 
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/profileImage1"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginBottom="20dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/baseline_person_24"
+            app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
+            android:contentDescription="@string/todo" />
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

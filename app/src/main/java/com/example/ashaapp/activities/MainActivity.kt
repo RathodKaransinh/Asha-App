@@ -64,15 +64,13 @@ class MainActivity : AppCompatActivity() {
             binding.container.visibility = View.INVISIBLE
             binding.mainProgressBar.visibility = View.VISIBLE
             db.collection(currentYear).document(currentMonth).collection("users").document(uid!!)
-                .get()
-                .addOnSuccessListener {
+                .get().addOnSuccessListener {
                     areSchemesUpdated = it.get("areSchemesUpdated") as Boolean
                     areApprovedSchemesUpdated = it.get("areApprovedSchemesUpdated") as Boolean
 
                     if (!areSchemesUpdated) {
                         allSchemesDAO.truncate()
-                        db.collection("services")
-                            .get().addOnSuccessListener { codes ->
+                        db.collection("services").get().addOnSuccessListener { codes ->
                                 for (code in codes) {
                                     val schemesList =
                                         code.data["schemes"] as ArrayList<Map<String, Any>>
@@ -97,8 +95,7 @@ class MainActivity : AppCompatActivity() {
                         notApprovedSchemesDAO.deleteOnlineSchemes()
                         approvedSchemesDAO.truncate()
                         db.collection(currentYear).document(currentMonth).collection("users")
-                            .document(uid)
-                            .get().addOnSuccessListener { doc ->
+                            .document(uid).get().addOnSuccessListener { doc ->
                                 val approved =
                                     doc.data?.get("approved") as ArrayList<Map<String, Any>>?
                                 val notApproved =
@@ -129,9 +126,7 @@ class MainActivity : AppCompatActivity() {
                                     }
                                 }
                                 Toast.makeText(
-                                    this,
-                                    "Schemes Updated Successfully",
-                                    Toast.LENGTH_SHORT
+                                    this, "Schemes Updated Successfully", Toast.LENGTH_SHORT
                                 ).show()
                             }
                         db.collection(currentYear).document(currentMonth).collection("users")
@@ -139,8 +134,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     binding.mainProgressBar.visibility = View.INVISIBLE
                     binding.container.visibility = View.VISIBLE
-                }
-                .addOnFailureListener {
+                }.addOnFailureListener {
                     Toast.makeText(this, "Failed to update flags", Toast.LENGTH_SHORT).show()
                     binding.mainProgressBar.visibility = View.INVISIBLE
                     binding.container.visibility = View.VISIBLE
@@ -155,8 +149,7 @@ class MainActivity : AppCompatActivity() {
                     binding.container.visibility = View.INVISIBLE
                     binding.mainProgressBar.visibility = View.VISIBLE
                     db.collection(currentYear).document(currentMonth).collection("users")
-                        .document(uid!!)
-                        .get().addOnSuccessListener {
+                        .document(uid!!).get().addOnSuccessListener {
                             Log.d(
                                 "not_app",
                                 (it.data?.get("notApproved") as ArrayList<Map<String, Any>>).toString()
@@ -173,8 +166,7 @@ class MainActivity : AppCompatActivity() {
                                 )
                             }
                             db.collection(currentYear).document(currentMonth).collection("users")
-                                .document(uid)
-                                .update("notApproved", notApproved)
+                                .document(uid).update("notApproved", notApproved)
                                 .addOnSuccessListener {
                                     Toast.makeText(
                                         view.context,
@@ -182,14 +174,12 @@ class MainActivity : AppCompatActivity() {
                                         Toast.LENGTH_LONG
                                     ).show()
                                     notApprovedSchemesDAO.updatestate()
-                                }
-                                .addOnFailureListener { exception ->
+                                }.addOnFailureListener { exception ->
                                     Log.d("Error", exception.toString())
                                 }
                             binding.mainProgressBar.visibility = View.INVISIBLE
                             binding.container.visibility = View.VISIBLE
-                        }
-                        .addOnFailureListener {
+                        }.addOnFailureListener {
                             Toast.makeText(
                                 view.context,
                                 "Offline Data Updated UnSuccessfully",

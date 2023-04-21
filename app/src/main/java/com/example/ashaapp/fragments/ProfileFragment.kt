@@ -1,9 +1,9 @@
 package com.example.ashaapp.fragments
 
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,21 +11,24 @@ import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import android.content.Context
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.ashaapp.R
 import com.example.ashaapp.activities.LoginActivity
 import com.example.ashaapp.models.UserProfile
+import com.google.android.material.imageview.ShapeableImageView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 
 
 class ProfileFragment : Fragment(), RefreshProfile {
 
     private lateinit var textViewName: TextView
-    private lateinit var textViewImage: TextView
+    private lateinit var profileImage: ShapeableImageView
     private lateinit var textViewDistrict: TextView
     private lateinit var logoutButton: Button
     private lateinit var editButton: Button
@@ -34,6 +37,7 @@ class ProfileFragment : Fragment(), RefreshProfile {
     private val auth = Firebase.auth
     private val uid = auth.uid!!
     private val db = Firebase.firestore
+    private val profileImageReference = Firebase.storage.reference.child("profileImages/$uid")
     private lateinit var userProfile: UserProfile
 
     override fun onCreateView(
@@ -60,26 +64,46 @@ class ProfileFragment : Fragment(), RefreshProfile {
 
     private fun loadProfileFromFirebase() {
         progressBar.visibility = View.VISIBLE
+        val defaultData = hashMapOf("name" to "name", "district" to "district", "taluka" to "taluka", "village" to "village")
         db.collection("user_profiles").document(uid)
-            .get()
-            .addOnSuccessListener { document ->
-                userProfile = document.toObject<UserProfile>()!!
-                textViewName.text = userProfile.name
-                textViewDistrict.text = userProfile.district
-                if (userProfile.name?.length == 0) textViewImage.text = ""
-                else textViewImage.text = userProfile.name?.substring(0, 1)
-                progressBar.visibility = View.INVISIBLE
-            }
-            .addOnFailureListener { exception ->
-                Log.d("user", "Error getting documents: ", exception)
-                progressBar.visibility = View.INVISIBLE
+            .addSnapshotListener { value, error ->
+                if (value!!.exists()) {
+                    userProfile = value.toObject<UserProfile>()!!
+                    textViewName.text = userProfile.name
+                    textViewDistrict.text = userProfile.district
+                    profileImageReference.downloadUrl
+                        .addOnSuccessListener{
+                            Glide.with(requireContext())
+                                .load(it)
+                                .centerCrop()
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .into(profileImage)
+                            progressBar.visibility = View.INVISIBLE
+                        }
+                        .addOnFailureListener{
+                            Glide.with(requireContext())
+                                .load(R.drawable.baseline_person_24)
+                                .fitCenter()
+                                .into(profileImage)
+                            progressBar.visibility = View.INVISIBLE
+                        }
+                } else {
+                    db.collection("user_profiles").document(uid)
+                        .set(defaultData)
+                        .addOnSuccessListener {
+                            progressBar.visibility = View.INVISIBLE
+                        }
+                }
+                if (error != null){
+                    progressBar.visibility = View.INVISIBLE
+                }
             }
     }
 
     private fun initUI(view: View) {
         textViewName = view.findViewById(R.id.profileName)
         logoutButton = view.findViewById(R.id.profileLogOutButton)
-        textViewImage = view.findViewById(R.id.profileImage)
+        profileImage = view.findViewById(R.id.profileImage)
         textViewDistrict = view.findViewById(R.id.profileDistrict)
         editButton = view.findViewById(R.id.profileEditButton)
         progressBar = view.findViewById(R.id.profileProgressBar)
