@@ -22,7 +22,7 @@ class EnterPinActivity : AppCompatActivity() {
         binding.enterPinButton.setOnClickListener {
             val pin = binding.enterPinEditText.text.toString()
 
-            if (pin.length != 4) Toast.makeText(this, "Enter a 4 digit pin", Toast.LENGTH_SHORT)
+            if (pin.length != 6) Toast.makeText(this, "Enter a 6 digit pin", Toast.LENGTH_SHORT)
                 .show()
             else {
                 if (pin == sharedPreferences.getString("user_pin", null)) {
@@ -49,7 +49,11 @@ class EnterPinActivity : AppCompatActivity() {
             binding.enterPinButton.setOnClickListener {
                 val password = binding.enterPinEditText.text.toString()
 
-                if (password.isEmpty()) Toast.makeText(this, "Password can't be Empty", Toast.LENGTH_SHORT)
+                if (password.isEmpty()) Toast.makeText(
+                    this,
+                    "Password can't be Empty",
+                    Toast.LENGTH_SHORT
+                )
                     .show()
                 else {
                     if (password == sharedPreferences.getString("password", null)) {

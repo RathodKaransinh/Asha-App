@@ -9,7 +9,7 @@ data class ApprovedSchemesEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
 
-    @ColumnInfo(name="service_scheme_name")
+    @ColumnInfo(name = "service_scheme_name")
     var ssname: String,
 
     @ColumnInfo(name = "date")

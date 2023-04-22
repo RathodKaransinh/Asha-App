@@ -37,7 +37,12 @@ class CreatePin : AppCompatActivity() {
         val monthDateFormat = SimpleDateFormat("MMM", Locale.US)
         val currentMonth = monthDateFormat.format(calendar.time)
 
-        val defaultData = hashMapOf("approved" to ArrayList<HashMap<String, Any>>(), "notApproved" to ArrayList<HashMap<String, Any>>(), "areSchemesUpdated" to false, "areApprovedSchemesUpdated" to false)
+        val defaultData = hashMapOf(
+            "approved" to ArrayList<HashMap<String, Any>>(),
+            "notApproved" to ArrayList<HashMap<String, Any>>(),
+            "areSchemesUpdated" to false,
+            "areApprovedSchemesUpdated" to false
+        )
 
         db.collection(currentYear).document(currentMonth).collection("users").document(uid!!)
             .addSnapshotListener { value, error ->
@@ -68,7 +73,7 @@ class CreatePin : AppCompatActivity() {
                             Log.d("error", it.toString())
                         }
                 }
-                if (error != null){
+                if (error != null) {
                     binding.linearLayout.visibility = View.VISIBLE
                     binding.createUserProgressBar.visibility = View.INVISIBLE
                     Log.d("error", error.toString())
@@ -79,7 +84,7 @@ class CreatePin : AppCompatActivity() {
 
         binding.createPinButton.setOnClickListener {
             val pin = binding.createPinEditText.text.toString()
-            if (pin.length != 4) Toast.makeText(this, "Enter a 4 digit pin!", Toast.LENGTH_SHORT)
+            if (pin.length != 6) Toast.makeText(this, "Enter a 6 digit pin!", Toast.LENGTH_SHORT)
                 .show()
             else {
                 sharedPreferences.edit().apply {

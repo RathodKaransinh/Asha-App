@@ -22,5 +22,5 @@ interface AllSchemesDAO {
     fun truncate()
 
     @Query("SELECT schemes_absolute_name FROM AllSchemesEntity where schemes_code_ab=:code")
-    fun filterSchemesWithCode(code: String) : List<String>
+    fun filterSchemesWithCode(code: String): List<String>
 }

@@ -9,7 +9,7 @@ data class NotApprovedSchemesEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
 
-    @ColumnInfo(name="req_scheme_name")
+    @ColumnInfo(name = "req_scheme_name")
     var req_scheme_name: String,
 
     @ColumnInfo(name = "req_time")

@@ -54,6 +54,7 @@ class LoginActivity : AppCompatActivity() {
                     binding.loginTextPassword.requestFocus()
                     true
                 }
+
                 else -> false
             }
         }
@@ -64,6 +65,7 @@ class LoginActivity : AppCompatActivity() {
                     loginProcess()
                     true
                 }
+
                 else -> false
             }
         }
@@ -74,7 +76,9 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun loginProcess() {
-        if (binding.loginTextEmailAddress.text.toString().isEmpty() || binding.loginTextPassword.text.toString().isEmpty()) {
+        if (binding.loginTextEmailAddress.text.toString()
+                .isEmpty() || binding.loginTextPassword.text.toString().isEmpty()
+        ) {
             Toast.makeText(
                 this,
                 "Email and Password fields can't be empty!",
@@ -85,7 +89,10 @@ class LoginActivity : AppCompatActivity() {
             binding.afterAnimationView.visibility = View.GONE
             binding.loginWave1.visibility = View.GONE
             binding.loginProgressBar.visibility = View.VISIBLE
-            auth.signInWithEmailAndPassword(binding.loginTextEmailAddress.text.toString(), binding.loginTextPassword.text.toString())
+            auth.signInWithEmailAndPassword(
+                binding.loginTextEmailAddress.text.toString(),
+                binding.loginTextPassword.text.toString()
+            )
                 .addOnCompleteListener(this) {
                     if (it.isSuccessful) {
                         binding.loginProgressBar.visibility = View.GONE

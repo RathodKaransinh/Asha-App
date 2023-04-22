@@ -65,8 +65,7 @@
         android:layout_marginTop="190dp"
         android:layout_marginEnd="44dp"
         android:layout_marginBottom="80dp"
-        android:scrollbarStyle="insideInset">
-    </ScrollView>
+        android:scrollbarStyle="insideInset"></ScrollView>
 
     <TextView
         android:id="@+id/textView2"
@@ -113,7 +112,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="47dp"
         android:textSize="@dimen/_14ssp"
-        android:text="@string/edit"/>
+        android:text="@string/edit" />
 
     <TextView
         android:id="@+id/textView4"
@@ -159,7 +158,7 @@
         android:layout_marginBottom="10dp"
         android:layout_centerHorizontal="true"
         android:textSize="@dimen/_16ssp"
-        android:text="@string/logout"/>
+        android:text="@string/logout" />
 
     <ProgressBar
         android:id="@+id/profileProgressBar"
@@ -167,6 +166,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="invisible"
-        android:layout_marginTop="@dimen/_250sdp"/>
+        android:layout_marginTop="@dimen/_250sdp" />
 
 </RelativeLayout>

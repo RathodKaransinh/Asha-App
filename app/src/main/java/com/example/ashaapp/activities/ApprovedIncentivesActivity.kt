@@ -32,9 +32,9 @@ class ApprovedIncentivesActivity : AppCompatActivity() {
         approvedSchemesDAO = approvedSchemesDB.dao()
 
         data = approvedSchemesDAO.getalldata() as ArrayList<ApprovedSchemesEntity>?
-        if (data == null){
+        if (data == null) {
             Toast.makeText(this, "Nothing to show!", Toast.LENGTH_SHORT).show()
-        } else{
+        } else {
             adapter = adapter_rv(data!!, this)
             binding.approvedList.layoutManager = LinearLayoutManager(this)
             binding.approvedList.adapter = adapter
@@ -47,6 +47,7 @@ class ApprovedIncentivesActivity : AppCompatActivity() {
             onBackPressedDispatcher.onBackPressed()
             true
         }
+
         else -> {
             super.onOptionsItemSelected(item)
         }

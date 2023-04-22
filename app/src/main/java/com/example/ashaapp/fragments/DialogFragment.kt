@@ -31,7 +31,7 @@ class DialogFragment(private val listener: RefreshProfile) : DialogFragment() {
     private lateinit var progressDialog: ProgressDialog
     private val auth = Firebase.auth
     private val uid = auth.uid!!
-    private lateinit var uri: Uri
+    private var uri: Uri? = null
     private val db = Firebase.firestore
     private val storage = Firebase.storage
     private lateinit var permissionLauncher: ActivityResultLauncher<String>
@@ -57,16 +57,25 @@ class DialogFragment(private val listener: RefreshProfile) : DialogFragment() {
 
         db.collection("user_profiles").document(uid)
             .update("name", userName, "district", userDistrict).addOnSuccessListener {
-                storage.reference.child("profileImages/$uid").putFile(uri).addOnSuccessListener {
+                if (uri != null) {
+                    storage.reference.child("profileImages/$uid").putFile(uri!!).addOnSuccessListener {
+                        progressDialog.dismiss()
+                        onDestroyView()
+                        Toast.makeText(context, "Profile Updated Successfully", Toast.LENGTH_SHORT)
+                            .show()
+                        listener.updateProfileFragment()
+                    }.addOnFailureListener {
+                        progressDialog.dismiss()
+                        onDestroyView()
+                        Toast.makeText(context, "Error in Updating Image", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                else {
                     progressDialog.dismiss()
                     onDestroyView()
                     Toast.makeText(context, "Profile Updated Successfully", Toast.LENGTH_SHORT)
                         .show()
                     listener.updateProfileFragment()
-                }.addOnFailureListener {
-                    progressDialog.dismiss()
-                    onDestroyView()
-                    Toast.makeText(context, "Error in Updating Image", Toast.LENGTH_SHORT).show()
                 }
             }.addOnFailureListener {
                 progressDialog.dismiss()

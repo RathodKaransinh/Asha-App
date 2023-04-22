@@ -22,13 +22,13 @@ import java.util.*
 
 
 class BottomSheetFragment     // Required empty public constructor
-    (var isneton: Boolean) : BottomSheetDialogFragment() {
+    (private var isneton: Boolean) : BottomSheetDialogFragment() {
 
     private lateinit var db: FirebaseFirestore
     private lateinit var allSchemesDAO: AllSchemesDAO
     private lateinit var notApprovedSchemesDAO: NotApprovedSchemesDAO
     private lateinit var adapter_scheme_name: ArrayAdapter<*>
-    private lateinit var scheme_code : AutoCompleteTextView
+    private lateinit var scheme_code: AutoCompleteTextView
     private lateinit var scheme_name: AutoCompleteTextView
     private val uid = Firebase.auth.uid
 
@@ -74,7 +74,11 @@ class BottomSheetFragment     // Required empty public constructor
             // You can get the label or item that the user clicked:
             val value = adapter_code.getItem(position) ?: ""
             val schemesList = allSchemesDAO.filterSchemesWithCode(value.toString())
-            adapter_scheme_name = ArrayAdapter<Any?>(view.context, R.layout.drop_down_scheme, schemesList as List<Any?>)
+            adapter_scheme_name = ArrayAdapter<Any?>(
+                view.context,
+                R.layout.drop_down_scheme,
+                schemesList as List<Any?>
+            )
             scheme_name.setAdapter(adapter_scheme_name)
         }
 

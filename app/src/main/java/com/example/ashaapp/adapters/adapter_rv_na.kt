@@ -16,6 +16,7 @@ class adapter_rv_na(c: Context) :
     var list = ArrayList<NotApprovedSchemesEntity>()
     private var c: Context
     private var fullList = ArrayList<NotApprovedSchemesEntity>()
+
     init {
         this.c = c
     }
@@ -44,7 +45,7 @@ class adapter_rv_na(c: Context) :
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateList(newList: List<NotApprovedSchemesEntity>){
+    fun updateList(newList: List<NotApprovedSchemesEntity>) {
         fullList.clear()
         fullList.addAll(newList)
 

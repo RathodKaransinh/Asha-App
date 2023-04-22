@@ -25,7 +25,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 
 
-class ProfileFragment : Fragment(), RefreshProfile {
+class ProfileFragment(private var isNetworkAvailable: Boolean) : Fragment(), RefreshProfile {
 
     private lateinit var textViewName: TextView
     private lateinit var profileImage: ShapeableImageView
@@ -41,9 +41,7 @@ class ProfileFragment : Fragment(), RefreshProfile {
     private lateinit var userProfile: UserProfile
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         val view: View = inflater.inflate(R.layout.fragment_profile, container, false)
 
@@ -52,52 +50,53 @@ class ProfileFragment : Fragment(), RefreshProfile {
         loadProfileFromFirebase()
 
         logoutButton.setOnClickListener {
-            logout()
+            if (isNetworkAvailable) logout()
+            else Toast.makeText(view.context, "તમારુ નેટ બંધ છે", Toast.LENGTH_LONG).show()
         }
 
         editButton.setOnClickListener {
-            editProfile()
+            if (isNetworkAvailable) editProfile()
+            else Toast.makeText(view.context, "તમારુ નેટ બંધ છે", Toast.LENGTH_LONG).show()
         }
 
         return view
     }
 
     private fun loadProfileFromFirebase() {
+        if (!isNetworkAvailable) return
+
         progressBar.visibility = View.VISIBLE
-        val defaultData = hashMapOf("name" to "name", "district" to "district", "taluka" to "taluka", "village" to "village")
-        db.collection("user_profiles").document(uid)
-            .addSnapshotListener { value, error ->
-                if (value!!.exists()) {
-                    userProfile = value.toObject<UserProfile>()!!
-                    textViewName.text = userProfile.name
-                    textViewDistrict.text = userProfile.district
-                    profileImageReference.downloadUrl
-                        .addOnSuccessListener{
-                            Glide.with(requireContext())
-                                .load(it)
-                                .centerCrop()
-                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                .into(profileImage)
-                            progressBar.visibility = View.INVISIBLE
-                        }
-                        .addOnFailureListener{
-                            Glide.with(requireContext())
-                                .load(R.drawable.baseline_person_24)
-                                .fitCenter()
-                                .into(profileImage)
-                            progressBar.visibility = View.INVISIBLE
-                        }
-                } else {
-                    db.collection("user_profiles").document(uid)
-                        .set(defaultData)
-                        .addOnSuccessListener {
-                            progressBar.visibility = View.INVISIBLE
-                        }
-                }
-                if (error != null){
+        val defaultData = hashMapOf(
+            "name" to "name", "district" to "district", "taluka" to "taluka", "village" to "village"
+        )
+        db.collection("user_profiles").document(uid).addSnapshotListener { value, error ->
+            if (value!!.exists()) {
+                userProfile = value.toObject<UserProfile>()!!
+                textViewName.text = userProfile.name
+                textViewDistrict.text = userProfile.district
+                profileImageReference.downloadUrl.addOnSuccessListener {
+                    context?.let { it1 ->
+                        Glide.with(it1).load(it).centerCrop()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL).into(profileImage)
+                    }
+                    progressBar.visibility = View.INVISIBLE
+                }.addOnFailureListener {
+                    context?.let { it1 ->
+                        Glide.with(it1).load(R.drawable.baseline_person_24)
+                            .fitCenter().into(profileImage)
+                    }
                     progressBar.visibility = View.INVISIBLE
                 }
+            } else {
+                db.collection("user_profiles").document(uid).set(defaultData)
+                    .addOnSuccessListener {
+                        progressBar.visibility = View.INVISIBLE
+                    }
             }
+            if (error != null) {
+                progressBar.visibility = View.INVISIBLE
+            }
+        }
     }
 
     private fun initUI(view: View) {
