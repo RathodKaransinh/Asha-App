@@ -29,10 +29,10 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
-    <string name="create_a_4_digit_pin">Create a 4 digit pin</string>
+    <string name="create_a_6_digit_pin">Create a 6 digit pin</string>
     <string name="enter_pin">Enter pin</string>
     <string name="create">Create</string>
-    <string name="enter_a_4_digit_pin">Enter a 4 digit pin</string>
+    <string name="enter_a_6_digit_pin">Enter a 6 digit pin</string>
     <string name="forgot_pin_enter_using_password">Forgot pin? Enter using password</string>
     <string name="enter">Enter</string>
     <string name="asha_name">Asha Name</string>

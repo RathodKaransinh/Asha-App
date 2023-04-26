@@ -27,15 +27,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:padding="@dimen/_5sdp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="@dimen/_5sdp">
 
         <TextView
             style="@style/TextAppearance.Material3.HeadlineMedium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:text="@string/create_a_4_digit_pin" />
+            android:text="@string/create_a_6_digit_pin" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/createPinTIL"
@@ -51,10 +51,10 @@
                 android:id="@+id/createPinEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="48dp"
-                android:labelFor="@id/createPinTIL"
                 android:hint="@string/enter_pin"
-                android:inputType="numberPassword" />
+                android:inputType="numberPassword"
+                android:labelFor="@id/createPinTIL"
+                android:minHeight="48dp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
