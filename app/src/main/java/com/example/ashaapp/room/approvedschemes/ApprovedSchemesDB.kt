@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [ApprovedSchemesEntity::class], version = 1, exportSchema = true)
+@Database(entities = [ApprovedSchemesEntity::class], version = 1, exportSchema = false)
 abstract class ApprovedSchemesDB : RoomDatabase() {
     abstract fun dao(): ApprovedSchemesDAO
 
