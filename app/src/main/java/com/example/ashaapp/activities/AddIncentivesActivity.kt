@@ -12,7 +12,9 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.ashaapp.adapters.adapter_rv_na
 import com.example.ashaapp.databinding.ActivityAddIncentivesBinding
 import com.example.ashaapp.fragments.BottomSheetFragment
@@ -55,10 +57,10 @@ class AddIncentivesActivity : AppCompatActivity() {
                 adapter.updateList(it)
             }
         }
-        //line changed by jaydip
+        //for swipe delete
         val itemTouchHelper = ItemTouchHelper(simpleCallback)
         itemTouchHelper.attachToRecyclerView(binding.notApprovedList)
-        //till here and  below
+
         binding.addService.setOnClickListener {
             val dialog = BottomSheetFragment(isNetworkAvailable())
             dialog.show(supportFragmentManager, BottomSheetFragment.TAG)
@@ -71,18 +73,19 @@ class AddIncentivesActivity : AppCompatActivity() {
     //here
      var simpleCallback: ItemTouchHelper.SimpleCallback =
              object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-                  override fun onMove(recyclerView: RecyclerView,viewHolder: RecyclerView.ViewHolder,target: RecyclerView.ViewHolder): Boolean {
+                  override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
                       return false
                   }
      
                   override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                       val position = viewHolder.adapterPosition
-                      modelList.removeAt(position)
-                      myadapter!!.notifyItemRemoved(position)
+                      notApprovedSchemesDAO.deleteOfflineSchemes(adapter.list.get(position).req_scheme_name)
+
+                      adapter.notifyItemRemoved(position)
                   }
               }
              
-     //till here done
+
     private fun initDB() {
         val calendar: Calendar = Calendar.getInstance()
         val yearDateFormat = SimpleDateFormat("yyyy", Locale.US)

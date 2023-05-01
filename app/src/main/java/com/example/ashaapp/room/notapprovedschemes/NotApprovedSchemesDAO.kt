@@ -25,6 +25,6 @@ interface NotApprovedSchemesDAO {
     @Query("DELETE FROM NotApprovedSchemesEntity where state=1")
     fun deleteOnlineSchemes()
 
-    @Query("DELETE FROM NotApprovedSchemesEntity where state=0")
-    fun deleteOfflineSchemes()
+    @Query("DELETE FROM NotApprovedSchemesEntity where req_scheme_name=:req_scheme_name")
+    fun deleteOfflineSchemes(req_scheme_name :String)
 }
