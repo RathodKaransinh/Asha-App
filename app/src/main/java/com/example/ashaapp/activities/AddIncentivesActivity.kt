@@ -55,13 +55,34 @@ class AddIncentivesActivity : AppCompatActivity() {
                 adapter.updateList(it)
             }
         }
-
+        //line changed by jaydip
+        val itemTouchHelper = ItemTouchHelper(simpleCallback)
+        itemTouchHelper.attachToRecyclerView(binding.notApprovedList)
+        //till here and  below
         binding.addService.setOnClickListener {
             val dialog = BottomSheetFragment(isNetworkAvailable())
             dialog.show(supportFragmentManager, BottomSheetFragment.TAG)
         }
+        
+        
     }
 
+    
+    //here
+     var simpleCallback: ItemTouchHelper.SimpleCallback =
+             object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+                  override fun onMove(recyclerView: RecyclerView,viewHolder: RecyclerView.ViewHolder,target: RecyclerView.ViewHolder): Boolean {
+                      return false
+                  }
+     
+                  override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                      val position = viewHolder.adapterPosition
+                      modelList.removeAt(position)
+                      myadapter!!.notifyItemRemoved(position)
+                  }
+              }
+             
+     //till here done
     private fun initDB() {
         val calendar: Calendar = Calendar.getInstance()
         val yearDateFormat = SimpleDateFormat("yyyy", Locale.US)
