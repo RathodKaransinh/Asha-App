@@ -3,6 +3,9 @@ package com.example.ashaapp.activities
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -72,50 +75,72 @@ class AddIncentivesActivity : AppCompatActivity() {
         val notApprovedSchemesDB = NotApprovedSchemesDB.getDatabase(this)
         notApprovedSchemesDAO = notApprovedSchemesDB.dao()
 
-        if (isNetworkAvailable()) {
-            val offlineSchemes = notApprovedSchemesDAO.offlineSchemes()
+        val networkRequest = NetworkRequest.Builder()
+            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+            .build()
 
-            if (!offlineSchemes.isNullOrEmpty()) {
-                binding.notApprovedList.visibility = View.INVISIBLE
-                binding.addService.visibility = View.INVISIBLE
-                binding.addIncentivesProgressBar.visibility = View.VISIBLE
-                db.collection(currentYear).document(currentMonth).collection("users")
-                    .document(uid!!).get().addOnSuccessListener {
-                        val notApproved = it.data?.get("notApproved") as ArrayList<Map<String, Any>>
-                        for (scheme in offlineSchemes) {
-                            notApproved.add(
-                                hashMapOf(
-                                    "name" to scheme.req_scheme_name,
-                                    "time" to scheme.req_date,
-                                    "value" to scheme.value_of_schemes
-                                )
-                            )
-                        }
+        val networkCallback = object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                runOnUiThread {
+                    val offlineSchemes = notApprovedSchemesDAO.offlineSchemes()
+
+                    if (!offlineSchemes.isNullOrEmpty()) {
+                        binding.notApprovedList.visibility = View.INVISIBLE
+                        binding.addService.visibility = View.INVISIBLE
+                        binding.addIncentivesProgressBar.visibility = View.VISIBLE
                         db.collection(currentYear).document(currentMonth).collection("users")
-                            .document(uid).update("notApproved", notApproved).addOnSuccessListener {
+                            .document(uid!!).get().addOnSuccessListener {
+                                val notApproved =
+                                    it.data?.get("notApproved") as ArrayList<Map<String, Any>>
+                                for (scheme in offlineSchemes) {
+                                    notApproved.add(
+                                        hashMapOf(
+                                            "name" to scheme.req_scheme_name,
+                                            "time" to scheme.req_date,
+                                            "value" to scheme.value_of_schemes
+                                        )
+                                    )
+                                }
+                                db.collection(currentYear).document(currentMonth)
+                                    .collection("users")
+                                    .document(uid).update("notApproved", notApproved)
+                                    .addOnSuccessListener {
+                                        Toast.makeText(
+                                            this@AddIncentivesActivity,
+                                            "Offline Data Updated Successfully",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                        notApprovedSchemesDAO.updatestate()
+                                        binding.notApprovedList.visibility = View.VISIBLE
+                                        binding.addService.visibility = View.VISIBLE
+                                        binding.addIncentivesProgressBar.visibility = View.INVISIBLE
+                                    }.addOnFailureListener { exception ->
+                                        Log.d("Error", exception.toString())
+                                        binding.notApprovedList.visibility = View.VISIBLE
+                                        binding.addService.visibility = View.VISIBLE
+                                        binding.addIncentivesProgressBar.visibility = View.INVISIBLE
+                                    }
+                            }.addOnFailureListener {
                                 Toast.makeText(
-                                    this, "Offline Data Updated Successfully", Toast.LENGTH_LONG
+                                    this@AddIncentivesActivity,
+                                    "Offline Data Updated UnSuccessfully",
+                                    Toast.LENGTH_LONG
                                 ).show()
-                                notApprovedSchemesDAO.updatestate()
-                                binding.notApprovedList.visibility = View.VISIBLE
-                                binding.addService.visibility = View.VISIBLE
-                                binding.addIncentivesProgressBar.visibility = View.INVISIBLE
-                            }.addOnFailureListener { exception ->
-                                Log.d("Error", exception.toString())
                                 binding.notApprovedList.visibility = View.VISIBLE
                                 binding.addService.visibility = View.VISIBLE
                                 binding.addIncentivesProgressBar.visibility = View.INVISIBLE
                             }
-                    }.addOnFailureListener {
-                        Toast.makeText(
-                            this, "Offline Data Updated UnSuccessfully", Toast.LENGTH_LONG
-                        ).show()
-                        binding.notApprovedList.visibility = View.VISIBLE
-                        binding.addService.visibility = View.VISIBLE
-                        binding.addIncentivesProgressBar.visibility = View.INVISIBLE
                     }
+                }
+                super.onAvailable(network)
             }
         }
+
+        val connectivityManager =
+            getSystemService(ConnectivityManager::class.java) as ConnectivityManager
+        connectivityManager.requestNetwork(networkRequest, networkCallback)
     }
 
     private fun isNetworkAvailable(): Boolean {
