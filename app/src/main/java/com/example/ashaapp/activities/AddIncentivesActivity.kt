@@ -36,6 +36,7 @@ class AddIncentivesActivity : AppCompatActivity() {
     private lateinit var currentYear: String
     private lateinit var currentMonth: String
 
+
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,7 +80,31 @@ class AddIncentivesActivity : AppCompatActivity() {
      
                   override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                       val position = viewHolder.adapterPosition
-                      notApprovedSchemesDAO.deleteOfflineSchemes(adapter.list.get(position).req_scheme_name)
+                      val schemeName=adapter.list.get(position).req_scheme_name
+                      val time=adapter.list.get(position).req_date
+                      val value =adapter.list.get(position).value_of_schemes
+                      notApprovedSchemesDAO.deleteOfflineSchemes(schemeName)
+                      if(isNetworkAvailable()){
+                            db.collection(currentYear).document(currentMonth).collection("users")
+                                .document(uid!!)
+                                .get().addOnSuccessListener {
+                                    val notApproved =
+                                        it.data?.get("notApproved") as ArrayList<Map<String, Any>>
+                                    notApproved.remove(hashMapOf("name" to schemeName,
+                                        "time" to time,
+                                        "value" to value ))
+                                    db.collection(currentYear).document(currentMonth).collection("users")
+                                        .document(uid)
+                                        .update("notApproved", notApproved)
+                                        .addOnSuccessListener {
+                                            Toast.makeText(this@AddIncentivesActivity,"Data removed Successfully",Toast.LENGTH_LONG).show()
+                                        }
+                                        .addOnFailureListener { exception ->
+                                            Log.d("Error", exception.toString())
+                                        }
+                                }
+
+                      }
 
                       adapter.notifyItemRemoved(position)
                   }
