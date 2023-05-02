@@ -2,6 +2,7 @@ package com.example.ashaapp.activities
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.DialogInterface
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
@@ -11,11 +12,13 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ashaapp.adapters.adapter_rv_na
+import com.example.ashaapp.adapters.adapter_rv_na.MyViewHolder
 import com.example.ashaapp.databinding.ActivityAddIncentivesBinding
 import com.example.ashaapp.fragments.BottomSheetFragment
 import com.example.ashaapp.room.notapprovedschemes.NotApprovedSchemesDAO
@@ -62,6 +65,7 @@ class AddIncentivesActivity : AppCompatActivity() {
         val itemTouchHelper = ItemTouchHelper(simpleCallback)
         itemTouchHelper.attachToRecyclerView(binding.notApprovedList)
 
+
         binding.addService.setOnClickListener {
             val dialog = BottomSheetFragment(isNetworkAvailable())
             dialog.show(supportFragmentManager, BottomSheetFragment.TAG)
@@ -77,15 +81,14 @@ class AddIncentivesActivity : AppCompatActivity() {
                   override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
                       return false
                   }
-     
-                  override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                      val position = viewHolder.adapterPosition
-                      val schemeName=adapter.list.get(position).req_scheme_name
-                      val time=adapter.list.get(position).req_date
-                      val value =adapter.list.get(position).value_of_schemes
-                      notApprovedSchemesDAO.deleteOfflineSchemes(schemeName)
+                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                       if(isNetworkAvailable()){
-                            db.collection(currentYear).document(currentMonth).collection("users")
+                          val position = viewHolder.adapterPosition
+                          val schemeName=adapter.list.get(position).req_scheme_name
+                          val time=adapter.list.get(position).req_date
+                          val value =adapter.list.get(position).value_of_schemes
+                          notApprovedSchemesDAO.deleteOfflineSchemes(schemeName)
+                          db.collection(currentYear).document(currentMonth).collection("users")
                                 .document(uid!!)
                                 .get().addOnSuccessListener {
                                     val notApproved =
@@ -103,12 +106,22 @@ class AddIncentivesActivity : AppCompatActivity() {
                                             Log.d("Error", exception.toString())
                                         }
                                 }
+                          adapter.notifyItemRemoved(position)
+                      }else{
+                          val builder = AlertDialog.Builder(this@AddIncentivesActivity)
+                          builder.setMessage("તમારુ નેટ બંધ છે, નેટચાલુ કરી ફરી પ્રયાસ કરો")
+                          builder.setTitle("Alert !")
+                          builder.setCancelable(false)
+                          builder.setPositiveButton("ઓકે") {
+                                  dialog, which -> dialog.dismiss()
+                          }
+                          val alertDialog = builder.create()
+                          alertDialog.show()
+                          adapter.notifyDataSetChanged()
 
                       }
-
-                      adapter.notifyItemRemoved(position)
-                  }
-              }
+                 }
+             }
              
 
     private fun initDB() {
