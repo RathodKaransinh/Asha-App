@@ -28,7 +28,7 @@ class LoginActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        object : CountDownTimer(3000, 1000) {
+        object : CountDownTimer(1000, 1000) {
             override fun onFinish() {
                 binding.bookITextView.visibility = View.GONE
                 binding.loadingProgressBar.visibility = View.GONE

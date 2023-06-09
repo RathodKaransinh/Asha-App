@@ -31,7 +31,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
 
@@ -70,72 +71,83 @@ class MainActivity : AppCompatActivity() {
                     areSchemesUpdated = it.get("areSchemesUpdated") as Boolean
                     areApprovedSchemesUpdated = it.get("areApprovedSchemesUpdated") as Boolean
 
-                    if (!areSchemesUpdated) {
-                        allSchemesDAO.truncate()
-                        db.collection("services").get().addOnSuccessListener { codes ->
-                            for (code in codes) {
-                                val schemesList =
-                                    code.data["schemes"] as ArrayList<Map<String, Any>>
-                                for (scheme in schemesList) {
-                                    allSchemesDAO.insert(
-                                        AllSchemesEntity(
-                                            0,
-                                            code.id,
-                                            scheme["name"] as String,
-                                            scheme["value"] as Long
-                                        )
-                                    )
-                                }
-                            }
-                        }
-                        db.collection(currentYear).document(currentMonth).collection("users")
-                            .document(uid).update("areSchemesUpdated", true)
-                        areSchemesUpdated = true
-                    }
-
-                    if (!areApprovedSchemesUpdated) {
-                        notApprovedSchemesDAO.deleteOnlineSchemes()
-                        approvedSchemesDAO.truncate()
-                        db.collection(currentYear).document(currentMonth).collection("users")
-                            .document(uid).get().addOnSuccessListener { doc ->
-                                val approved =
-                                    doc.data?.get("approved") as ArrayList<Map<String, Any>>?
-                                val notApproved =
-                                    doc.data?.get("notApproved") as ArrayList<Map<String, Any>>?
-                                if (approved != null) {
-                                    for (scheme in approved) {
-                                        approvedSchemesDAO.insert(
-                                            ApprovedSchemesEntity(
+                    if (!areSchemesUpdated || !areApprovedSchemesUpdated) {
+                        if (!areSchemesUpdated) {
+                            allSchemesDAO.truncate()
+                            db.collection("services").get().addOnSuccessListener { codes ->
+                                for (code in codes) {
+                                    val schemesList =
+                                        code.data["schemes"] as ArrayList<Map<String, Any>>
+                                    for (scheme in schemesList) {
+                                        allSchemesDAO.insert(
+                                            AllSchemesEntity(
                                                 0,
+                                                code.id,
                                                 scheme["name"] as String,
-                                                scheme["time"] as String,
                                                 scheme["value"] as Long
                                             )
                                         )
                                     }
                                 }
-                                if (notApproved != null) {
-                                    for (scheme in notApproved) {
-                                        notApprovedSchemesDAO.insert(
-                                            NotApprovedSchemesEntity(
-                                                0,
-                                                scheme["name"] as String,
-                                                scheme["time"] as String,
-                                                scheme["value"] as Long,
-                                                true
-                                            )
-                                        )
-                                    }
-                                }
-                                Toast.makeText(
-                                    this, "Schemes Updated Successfully", Toast.LENGTH_SHORT
-                                ).show()
+                                db.collection(currentYear).document(currentMonth)
+                                    .collection("users")
+                                    .document(uid).update("areSchemesUpdated", true)
+                                areSchemesUpdated = true
+                                binding.mainProgressBar.visibility = View.INVISIBLE
+                                binding.container.visibility = View.VISIBLE
                             }
-                        db.collection(currentYear).document(currentMonth).collection("users")
-                            .document(uid).update("areApprovedSchemesUpdated", true)
+                        }
+
+                        if (!areApprovedSchemesUpdated) {
+                            notApprovedSchemesDAO.deleteOnlineSchemes()
+                            approvedSchemesDAO.truncate()
+                            db.collection(currentYear).document(currentMonth).collection("users")
+                                .document(uid).get().addOnSuccessListener { doc ->
+                                    val approved =
+                                        doc.data?.get("approved") as ArrayList<Map<String, Any>>?
+                                    val notApproved =
+                                        doc.data?.get("notApproved") as ArrayList<Map<String, Any>>?
+                                    if (approved != null) {
+                                        for (scheme in approved) {
+                                            approvedSchemesDAO.insert(
+                                                ApprovedSchemesEntity(
+                                                    0,
+                                                    scheme["name"] as String,
+                                                    scheme["time"] as String,
+                                                    scheme["value"] as Long
+                                                )
+                                            )
+                                        }
+                                    }
+                                    if (notApproved != null) {
+                                        for (scheme in notApproved) {
+                                            notApprovedSchemesDAO.insert(
+                                                NotApprovedSchemesEntity(
+                                                    0,
+                                                    scheme["name"] as String,
+                                                    scheme["time"] as String,
+                                                    scheme["value"] as Long,
+                                                    true
+                                                )
+                                            )
+                                        }
+                                    }
+                                    db.collection(currentYear).document(currentMonth)
+                                        .collection("users")
+                                        .document(uid).update("areApprovedSchemesUpdated", true)
+                                    areApprovedSchemesUpdated = true
+                                    Toast.makeText(
+                                        this, "Schemes Updated Successfully", Toast.LENGTH_SHORT
+                                    ).show()
+                                    binding.mainProgressBar.visibility = View.INVISIBLE
+                                    binding.container.visibility = View.VISIBLE
+                                }
+                        }
+                    } else {
+                        binding.mainProgressBar.visibility = View.INVISIBLE
+                        binding.container.visibility = View.VISIBLE
                     }
-                    binding.mainProgressBar.visibility = View.INVISIBLE
-                    binding.container.visibility = View.VISIBLE
+
                 }.addOnFailureListener {
                     Toast.makeText(this, "Failed to update flags", Toast.LENGTH_SHORT).show()
                     binding.mainProgressBar.visibility = View.INVISIBLE
