@@ -13,7 +13,7 @@ data class ApprovedSchemesEntity(
     var ssname: String,
 
     @ColumnInfo(name = "date")
-    var date: String,
+    var date: Long,
 
     @ColumnInfo(name = "value_of_service_scheme")
     var valueofservicescheme: Long,

@@ -26,12 +26,14 @@ import com.example.ashaapp.room.approvedschemes.ApprovedSchemesEntity
 import com.example.ashaapp.room.notapprovedschemes.NotApprovedSchemesDAO
 import com.example.ashaapp.room.notapprovedschemes.NotApprovedSchemesDB
 import com.example.ashaapp.room.notapprovedschemes.NotApprovedSchemesEntity
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
@@ -41,8 +43,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var allSchemesDAO: AllSchemesDAO
     private lateinit var approvedSchemesDAO: ApprovedSchemesDAO
     private lateinit var notApprovedSchemesDAO: NotApprovedSchemesDAO
-    private var areSchemesUpdated = false
-    private var areApprovedSchemesUpdated = false
+    private var areSchemesUpdated = true
+    private var areApprovedSchemesUpdated = true
     private val uid = Firebase.auth.uid
     private lateinit var currentYear: String
     private lateinit var currentMonth: String
@@ -66,82 +68,18 @@ class MainActivity : AppCompatActivity() {
         if (isNetworkAvailable()) {
             binding.container.visibility = View.INVISIBLE
             binding.mainProgressBar.visibility = View.VISIBLE
-            db.collection(currentYear).document(currentMonth).collection("users").document(uid!!)
+            db.collection("users").document(uid!!)
                 .get().addOnSuccessListener {
                     areSchemesUpdated = it.get("areSchemesUpdated") as Boolean
                     areApprovedSchemesUpdated = it.get("areApprovedSchemesUpdated") as Boolean
 
-                    if (!areSchemesUpdated || !areApprovedSchemesUpdated) {
-                        if (!areSchemesUpdated) {
-                            allSchemesDAO.truncate()
-                            db.collection("services").get().addOnSuccessListener { codes ->
-                                for (code in codes) {
-                                    val schemesList =
-                                        code.data["schemes"] as ArrayList<Map<String, Any>>
-                                    for (scheme in schemesList) {
-                                        allSchemesDAO.insert(
-                                            AllSchemesEntity(
-                                                0,
-                                                code.id,
-                                                scheme["name"] as String,
-                                                scheme["value"] as Long
-                                            )
-                                        )
-                                    }
-                                }
-                                db.collection(currentYear).document(currentMonth)
-                                    .collection("users")
-                                    .document(uid).update("areSchemesUpdated", true)
-                                areSchemesUpdated = true
-                                binding.mainProgressBar.visibility = View.INVISIBLE
-                                binding.container.visibility = View.VISIBLE
-                            }
+                    if (areSchemesUpdated || areApprovedSchemesUpdated) {
+                        if (areSchemesUpdated) {
+                            updateServices()
                         }
 
-                        if (!areApprovedSchemesUpdated) {
-                            notApprovedSchemesDAO.deleteOnlineSchemes()
-                            approvedSchemesDAO.truncate()
-                            db.collection(currentYear).document(currentMonth).collection("users")
-                                .document(uid).get().addOnSuccessListener { doc ->
-                                    val approved =
-                                        doc.data?.get("approved") as ArrayList<Map<String, Any>>?
-                                    val notApproved =
-                                        doc.data?.get("notApproved") as ArrayList<Map<String, Any>>?
-                                    if (approved != null) {
-                                        for (scheme in approved) {
-                                            approvedSchemesDAO.insert(
-                                                ApprovedSchemesEntity(
-                                                    0,
-                                                    scheme["name"] as String,
-                                                    scheme["time"] as String,
-                                                    scheme["value"] as Long
-                                                )
-                                            )
-                                        }
-                                    }
-                                    if (notApproved != null) {
-                                        for (scheme in notApproved) {
-                                            notApprovedSchemesDAO.insert(
-                                                NotApprovedSchemesEntity(
-                                                    0,
-                                                    scheme["name"] as String,
-                                                    scheme["time"] as String,
-                                                    scheme["value"] as Long,
-                                                    true
-                                                )
-                                            )
-                                        }
-                                    }
-                                    db.collection(currentYear).document(currentMonth)
-                                        .collection("users")
-                                        .document(uid).update("areApprovedSchemesUpdated", true)
-                                    areApprovedSchemesUpdated = true
-                                    Toast.makeText(
-                                        this, "Schemes Updated Successfully", Toast.LENGTH_SHORT
-                                    ).show()
-                                    binding.mainProgressBar.visibility = View.INVISIBLE
-                                    binding.container.visibility = View.VISIBLE
-                                }
+                        if (areApprovedSchemesUpdated) {
+                            updateApprovedIncentives()
                         }
                     } else {
                         binding.mainProgressBar.visibility = View.INVISIBLE
@@ -156,54 +94,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         notApprovedSchemesDAO.getalldata().observe(this) { data ->
-            data?.let { _ ->
-                val offlineSchemes = notApprovedSchemesDAO.offlineSchemes()
-
-                if (!offlineSchemes.isNullOrEmpty()) {
-                    if (isNetworkAvailable()) {
-                        binding.container.visibility = View.INVISIBLE
-                        binding.mainProgressBar.visibility = View.VISIBLE
-                        db.collection(currentYear).document(currentMonth).collection("users")
-                            .document(uid!!).get().addOnSuccessListener {
-                                val notApproved =
-                                    it.data?.get("notApproved") as ArrayList<Map<String, Any>>
-                                for (scheme in offlineSchemes) {
-                                    notApproved.add(
-                                        hashMapOf(
-                                            "name" to scheme.req_scheme_name,
-                                            "time" to scheme.req_date,
-                                            "value" to scheme.value_of_schemes
-                                        )
-                                    )
-                                }
-                                db.collection(currentYear).document(currentMonth)
-                                    .collection("users")
-                                    .document(uid).update("notApproved", notApproved)
-                                    .addOnSuccessListener {
-                                        Toast.makeText(
-                                            view.context,
-                                            "Offline Data Updated Successfully",
-                                            Toast.LENGTH_LONG
-                                        ).show()
-                                        notApprovedSchemesDAO.updatestate()
-                                        binding.mainProgressBar.visibility = View.INVISIBLE
-                                        binding.container.visibility = View.VISIBLE
-                                    }.addOnFailureListener { exception ->
-                                        Log.d("Error", exception.toString())
-                                        binding.mainProgressBar.visibility = View.INVISIBLE
-                                        binding.container.visibility = View.VISIBLE
-                                    }
-                            }.addOnFailureListener {
-                                Toast.makeText(
-                                    view.context,
-                                    "Offline Data Updated UnSuccessfully",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                                binding.mainProgressBar.visibility = View.INVISIBLE
-                                binding.container.visibility = View.VISIBLE
-                            }
-                    }
-                }
+            data?.let {
+                updateOfflineSchemes()
             }
         }
 
@@ -227,6 +119,125 @@ class MainActivity : AppCompatActivity() {
 
         binding.addIncentivesButton.setOnClickListener {
             startActivity(Intent(this, AddIncentivesActivity::class.java))
+        }
+    }
+
+    private fun updateApprovedIncentives() {
+        notApprovedSchemesDAO.deleteOnlineSchemes()
+        approvedSchemesDAO.truncate()
+        db.collection("users")
+            .document(uid!!).get().addOnSuccessListener { doc ->
+                val approved =
+                    doc.data?.get("approved") as ArrayList<Map<String, Any>>?
+                val notApproved =
+                    doc.data?.get("notApproved") as ArrayList<Map<String, Any>>?
+                if (approved != null) {
+                    for (scheme in approved) {
+                        approvedSchemesDAO.insert(
+                            ApprovedSchemesEntity(
+                                0,
+                                scheme["name"] as String,
+                                (scheme["time"] as Timestamp).toDate().time,
+                                scheme["value"] as Long
+                            )
+                        )
+                    }
+                }
+                if (notApproved != null) {
+                    for (scheme in notApproved) {
+                        notApprovedSchemesDAO.insert(
+                            NotApprovedSchemesEntity(
+                                0,
+                                scheme["name"] as String,
+                                (scheme["time"] as Timestamp).toDate().time,
+                                scheme["value"] as Long,
+                                true
+                            )
+                        )
+                    }
+                }
+                db.collection("users")
+                    .document(uid).update("areApprovedSchemesUpdated", false)
+                areApprovedSchemesUpdated = false
+                Toast.makeText(
+                    this, "Schemes Updated Successfully", Toast.LENGTH_SHORT
+                ).show()
+                binding.mainProgressBar.visibility = View.INVISIBLE
+                binding.container.visibility = View.VISIBLE
+            }
+    }
+
+    private fun updateServices() {
+        allSchemesDAO.truncate()
+        db.collection("services").get().addOnSuccessListener { codes ->
+            for (code in codes) {
+                val schemesList =
+                    code.data["schemes"] as ArrayList<Map<String, Any>>
+                for (scheme in schemesList) {
+                    allSchemesDAO.insert(
+                        AllSchemesEntity(
+                            0,
+                            code.id,
+                            scheme["name"] as String,
+                            scheme["value"] as Long
+                        )
+                    )
+                }
+            }
+            db.collection("users")
+                .document(uid!!).update("areSchemesUpdated", false)
+            areSchemesUpdated = false
+            binding.mainProgressBar.visibility = View.INVISIBLE
+            binding.container.visibility = View.VISIBLE
+        }
+    }
+
+    private fun updateOfflineSchemes() {
+        val offlineSchemes = notApprovedSchemesDAO.offlineSchemes()
+
+        if (!offlineSchemes.isNullOrEmpty()) {
+            if (isNetworkAvailable()) {
+                binding.container.visibility = View.INVISIBLE
+                binding.mainProgressBar.visibility = View.VISIBLE
+                db.collection("users")
+                    .document(uid!!).get().addOnSuccessListener {
+                        val notApproved =
+                            it.data?.get("notApproved") as ArrayList<Map<String, Any>>
+                        for (scheme in offlineSchemes) {
+                            notApproved.add(
+                                hashMapOf(
+                                    "name" to scheme.req_scheme_name,
+                                    "time" to Timestamp(Date(scheme.req_date)),
+                                    "value" to scheme.value_of_schemes
+                                )
+                            )
+                        }
+                        db.collection("users")
+                            .document(uid).update("notApproved", notApproved)
+                            .addOnSuccessListener {
+                                Toast.makeText(
+                                    this@MainActivity,
+                                    "Offline Data Updated Successfully",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                notApprovedSchemesDAO.updatestate()
+                                binding.mainProgressBar.visibility = View.INVISIBLE
+                                binding.container.visibility = View.VISIBLE
+                            }.addOnFailureListener { exception ->
+                                Log.d("Error", exception.toString())
+                                binding.mainProgressBar.visibility = View.INVISIBLE
+                                binding.container.visibility = View.VISIBLE
+                            }
+                    }.addOnFailureListener {
+                        Toast.makeText(
+                            this@MainActivity,
+                            "Offline Data Updated UnSuccessfully",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        binding.mainProgressBar.visibility = View.INVISIBLE
+                        binding.container.visibility = View.VISIBLE
+                    }
+            }
         }
     }
 

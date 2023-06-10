@@ -2,7 +2,6 @@ package com.example.ashaapp.activities
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.DialogInterface
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
@@ -18,11 +17,11 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ashaapp.adapters.adapter_rv_na
-import com.example.ashaapp.adapters.adapter_rv_na.MyViewHolder
 import com.example.ashaapp.databinding.ActivityAddIncentivesBinding
 import com.example.ashaapp.fragments.BottomSheetFragment
 import com.example.ashaapp.room.notapprovedschemes.NotApprovedSchemesDAO
 import com.example.ashaapp.room.notapprovedschemes.NotApprovedSchemesDB
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -70,59 +69,61 @@ class AddIncentivesActivity : AppCompatActivity() {
             val dialog = BottomSheetFragment(isNetworkAvailable())
             dialog.show(supportFragmentManager, BottomSheetFragment.TAG)
         }
-        
-        
+
+
     }
 
-    
-    //here
-     var simpleCallback: ItemTouchHelper.SimpleCallback =
-             object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-                  override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
-                      return false
-                  }
-                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                      if(isNetworkAvailable()){
-                          val position = viewHolder.adapterPosition
-                          val schemeName=adapter.list.get(position).req_scheme_name
-                          val time=adapter.list.get(position).req_date
-                          val value =adapter.list.get(position).value_of_schemes
-                          notApprovedSchemesDAO.deleteOfflineSchemes(schemeName)
-                          db.collection(currentYear).document(currentMonth).collection("users")
-                                .document(uid!!)
-                                .get().addOnSuccessListener {
-                                    val notApproved =
-                                        it.data?.get("notApproved") as ArrayList<Map<String, Any>>
-                                    notApproved.remove(hashMapOf("name" to schemeName,
-                                        "time" to time,
-                                        "value" to value ))
-                                    db.collection(currentYear).document(currentMonth).collection("users")
-                                        .document(uid)
-                                        .update("notApproved", notApproved)
-                                        .addOnSuccessListener {
-                                            Toast.makeText(this@AddIncentivesActivity,"Data removed Successfully",Toast.LENGTH_LONG).show()
-                                        }
-                                        .addOnFailureListener { exception ->
-                                            Log.d("Error", exception.toString())
-                                        }
-                                }
-                          adapter.notifyItemRemoved(position)
-                      }else{
-                          val builder = AlertDialog.Builder(this@AddIncentivesActivity)
-                          builder.setMessage("તમારુ નેટ બંધ છે, નેટચાલુ કરી ફરી પ્રયાસ કરો")
-                          builder.setTitle("Alert !")
-                          builder.setCancelable(false)
-                          builder.setPositiveButton("ઓકે") {
-                                  dialog, which -> dialog.dismiss()
-                          }
-                          val alertDialog = builder.create()
-                          alertDialog.show()
-                          adapter.notifyDataSetChanged()
 
-                      }
-                 }
-             }
-             
+    //here
+    private var simpleCallback: ItemTouchHelper.SimpleCallback =
+        object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                if (isNetworkAvailable()) {
+                    val position = viewHolder.adapterPosition
+                    db.collection("users")
+                        .document(uid!!)
+                        .get().addOnSuccessListener {
+                            val notApproved =
+                                it.data?.get("notApproved") as ArrayList<Map<String, Any>>
+                            notApproved.removeAt(position)
+                            db.collection("users")
+                                .document(uid)
+                                .update("notApproved", notApproved)
+                                .addOnSuccessListener {
+                                    Toast.makeText(
+                                        this@AddIncentivesActivity,
+                                        "Data removed Successfully",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                                .addOnFailureListener { exception ->
+                                    Log.d("Error", exception.toString())
+                                }
+                        }
+                    adapter.notifyItemRemoved(position)
+                } else {
+                    val builder = AlertDialog.Builder(this@AddIncentivesActivity)
+                    builder.setMessage("તમારુ નેટ બંધ છે, નેટચાલુ કરી ફરી પ્રયાસ કરો")
+                    builder.setTitle("Alert !")
+                    builder.setCancelable(false)
+                    builder.setPositiveButton("ઓકે") { dialog, which ->
+                        dialog.dismiss()
+                    }
+                    val alertDialog = builder.create()
+                    alertDialog.show()
+                    adapter.notifyDataSetChanged()
+                }
+            }
+        }
+
 
     private fun initDB() {
         val calendar: Calendar = Calendar.getInstance()
@@ -152,7 +153,7 @@ class AddIncentivesActivity : AppCompatActivity() {
                         binding.notApprovedList.visibility = View.INVISIBLE
                         binding.addService.visibility = View.INVISIBLE
                         binding.addIncentivesProgressBar.visibility = View.VISIBLE
-                        db.collection(currentYear).document(currentMonth).collection("users")
+                        db.collection("users")
                             .document(uid!!).get().addOnSuccessListener {
                                 val notApproved =
                                     it.data?.get("notApproved") as ArrayList<Map<String, Any>>
@@ -160,13 +161,12 @@ class AddIncentivesActivity : AppCompatActivity() {
                                     notApproved.add(
                                         hashMapOf(
                                             "name" to scheme.req_scheme_name,
-                                            "time" to scheme.req_date,
+                                            "time" to Timestamp(Date(scheme.req_date)),
                                             "value" to scheme.value_of_schemes
                                         )
                                     )
                                 }
-                                db.collection(currentYear).document(currentMonth)
-                                    .collection("users")
+                                db.collection("users")
                                     .document(uid).update("notApproved", notApproved)
                                     .addOnSuccessListener {
                                         Toast.makeText(

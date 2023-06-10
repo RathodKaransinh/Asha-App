@@ -13,7 +13,7 @@ data class NotApprovedSchemesEntity(
     var req_scheme_name: String,
 
     @ColumnInfo(name = "req_time")
-    var req_date: String,
+    var req_date: Long,
 
     @ColumnInfo(name = "value_of_schemes")
     var value_of_schemes: Long,

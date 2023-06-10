@@ -5,7 +5,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
+import android.widget.Button
+import android.widget.Toast
 import com.example.ashaapp.R
 import com.example.ashaapp.room.allschemes.AllSchemesDAO
 import com.example.ashaapp.room.allschemes.AllSchemesDB
@@ -13,12 +16,12 @@ import com.example.ashaapp.room.notapprovedschemes.NotApprovedSchemesDAO
 import com.example.ashaapp.room.notapprovedschemes.NotApprovedSchemesDB
 import com.example.ashaapp.room.notapprovedschemes.NotApprovedSchemesEntity
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
 
 
 class BottomSheetFragment     // Required empty public constructor
@@ -42,13 +45,6 @@ class BottomSheetFragment     // Required empty public constructor
     ): View {
         // Inflate the layout for this fragment
         val view: View = inflater.inflate(R.layout.fragment_bottom_sheet, container, false)
-
-        val calendar: Calendar = Calendar.getInstance()
-        val yearDateFormat = SimpleDateFormat("yyyy", Locale.US)
-        val currentYear = yearDateFormat.format(calendar.time)
-
-        val monthDateFormat = SimpleDateFormat("MMM", Locale.US)
-        val currentMonth = monthDateFormat.format(calendar.time)
 
         val allSchemesDB = context?.let { AllSchemesDB.getDatabase(it) }
         if (allSchemesDB != null) {
@@ -90,22 +86,21 @@ class BottomSheetFragment     // Required empty public constructor
                 Toast.makeText(context, "Select scheme name!", Toast.LENGTH_SHORT).show()
             } else {
                 val value: Long = allSchemesDAO.getprize(schemeName)
-                val simpleDateFormat = SimpleDateFormat("dd-MM-yyyy hh:mm:ss a", Locale.US)
-                val dateTime = simpleDateFormat.format(calendar.time)
-
-                Log.d("date", dateTime)
+                val calendar: Calendar = Calendar.getInstance()
+                val date = calendar.time
+                val dateTime = Timestamp(date)
 
                 notApprovedSchemesDAO.insert(
                     NotApprovedSchemesEntity(
                         0,
                         schemeName,
-                        dateTime,
+                        date.time,
                         value,
                         isneton
                     )
                 )
                 if (isneton) {
-                    db.collection(currentYear).document(currentMonth).collection("users")
+                    db.collection("users")
                         .document(uid!!)
                         .get().addOnSuccessListener {
                             val notApproved =
@@ -117,7 +112,7 @@ class BottomSheetFragment     // Required empty public constructor
                                     "value" to value
                                 )
                             )
-                            db.collection(currentYear).document(currentMonth).collection("users")
+                            db.collection("users")
                                 .document(uid)
                                 .update("notApproved", notApproved)
                                 .addOnSuccessListener {

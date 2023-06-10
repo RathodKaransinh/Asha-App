@@ -17,6 +17,7 @@ import androidx.fragment.app.DialogFragment
 import com.example.ashaapp.R
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
@@ -55,22 +56,31 @@ class DialogFragment(private val listener: RefreshProfile) : DialogFragment() {
 
         showProgressDialog()
 
-        db.collection("user_profiles").document(uid)
-            .update("name", userName, "district", userDistrict).addOnSuccessListener {
+        db.collection("users").document(uid)
+            .update("district", userDistrict).addOnSuccessListener {
                 if (uri != null) {
-                    storage.reference.child("profileImages/$uid").putFile(uri!!).addOnSuccessListener {
-                        progressDialog.dismiss()
-                        onDestroyView()
-                        Toast.makeText(context, "Profile Updated Successfully", Toast.LENGTH_SHORT)
-                            .show()
-                        listener.updateProfileFragment()
-                    }.addOnFailureListener {
-                        progressDialog.dismiss()
-                        onDestroyView()
-                        Toast.makeText(context, "Error in Updating Image", Toast.LENGTH_SHORT).show()
-                    }
-                }
-                else {
+                    storage.reference.child("profileImages/$uid").putFile(uri!!)
+                        .addOnSuccessListener {
+                            auth.currentUser!!.updateProfile(userProfileChangeRequest {
+                                displayName = userName
+                            }).addOnSuccessListener {
+                                progressDialog.dismiss()
+                                onDestroyView()
+                                Toast.makeText(
+                                    context,
+                                    "Profile Updated Successfully",
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .show()
+                                listener.updateProfileFragment()
+                            }
+                        }.addOnFailureListener {
+                            progressDialog.dismiss()
+                            onDestroyView()
+                            Toast.makeText(context, "Error in Updating Image", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                } else {
                     progressDialog.dismiss()
                     onDestroyView()
                     Toast.makeText(context, "Profile Updated Successfully", Toast.LENGTH_SHORT)

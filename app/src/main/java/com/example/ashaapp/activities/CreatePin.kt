@@ -10,10 +10,6 @@ import com.example.ashaapp.databinding.ActivityCreatePinBinding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 class CreatePin : AppCompatActivity() {
 
@@ -30,26 +26,20 @@ class CreatePin : AppCompatActivity() {
         binding.createUserProgressBar.visibility = View.VISIBLE
         binding.linearLayout.visibility = View.INVISIBLE
 
-        val calendar: Calendar = Calendar.getInstance()
-        val yearDateFormat = SimpleDateFormat("yyyy", Locale.US)
-        val currentYear = yearDateFormat.format(calendar.time)
-
-        val monthDateFormat = SimpleDateFormat("MMM", Locale.US)
-        val currentMonth = monthDateFormat.format(calendar.time)
-
         val defaultData = hashMapOf(
             "approved" to ArrayList<HashMap<String, Any>>(),
             "notApproved" to ArrayList<HashMap<String, Any>>(),
-            "areSchemesUpdated" to false,
-            "areApprovedSchemesUpdated" to false
+            "areSchemesUpdated" to true,
+            "areApprovedSchemesUpdated" to true,
+            "district" to "district"
         )
 
-        db.collection(currentYear).document(currentMonth).collection("users").document(uid!!)
+        db.collection("users").document(uid!!)
             .addSnapshotListener { value, error ->
                 if (value!!.exists()) {
-                    db.collection(currentYear).document(currentMonth).collection("users")
+                    db.collection("users")
                         .document(uid)
-                        .update("areSchemesUpdated", false, "areApprovedSchemesUpdated", false)
+                        .update("areSchemesUpdated", true, "areApprovedSchemesUpdated", true)
                         .addOnSuccessListener {
                             binding.linearLayout.visibility = View.VISIBLE
                             binding.createUserProgressBar.visibility = View.INVISIBLE
@@ -60,7 +50,7 @@ class CreatePin : AppCompatActivity() {
                             Log.d("error", it.toString())
                         }
                 } else {
-                    db.collection(currentYear).document(currentMonth).collection("users")
+                    db.collection("users")
                         .document(uid)
                         .set(defaultData)
                         .addOnSuccessListener {

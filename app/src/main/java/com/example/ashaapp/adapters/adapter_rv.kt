@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ashaapp.R
 import com.example.ashaapp.room.approvedschemes.ApprovedSchemesEntity
+import java.util.Date
 
 class adapter_rv(data: ArrayList<ApprovedSchemesEntity>, context: Context) :
     RecyclerView.Adapter<adapter_rv.MyViewHolder>() {
@@ -29,7 +30,7 @@ class adapter_rv(data: ArrayList<ApprovedSchemesEntity>, context: Context) :
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val model: ApprovedSchemesEntity = data[position]
         holder.scheme_name_rv.text = model.ssname
-        holder.date_rv.text = model.date
+        holder.date_rv.text = Date(model.date).toString()
         holder.scheme_name_rv.setTextColor(ContextCompat.getColor(context, R.color.green))
         holder.date_rv.setTextColor(ContextCompat.getColor(context, R.color.grey))
     }
