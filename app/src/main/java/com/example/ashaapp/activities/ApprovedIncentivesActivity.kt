@@ -8,16 +8,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.ashaapp.adapters.adapter_rv
 import com.example.ashaapp.databinding.ActivityApprovedIncentivesBinding
-import com.example.ashaapp.room.approvedschemes.ApprovedSchemesDAO
-import com.example.ashaapp.room.approvedschemes.ApprovedSchemesDB
-import com.example.ashaapp.room.approvedschemes.ApprovedSchemesEntity
+import com.example.ashaapp.room.user_incentives.DB
+import com.example.ashaapp.room.user_incentives.IncentivesDao
+import com.example.ashaapp.room.user_incentives.IncentivesEntity
 
 class ApprovedIncentivesActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityApprovedIncentivesBinding
-    var data: ArrayList<ApprovedSchemesEntity>? = null
+    private var data: ArrayList<IncentivesEntity>? = null
     private lateinit var adapter: adapter_rv
-    private lateinit var approvedSchemesDAO: ApprovedSchemesDAO
+    private lateinit var userIncentivesDAO: IncentivesDao
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,10 +28,10 @@ class ApprovedIncentivesActivity : AppCompatActivity() {
         setSupportActionBar(binding.approvedToolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val approvedSchemesDB = ApprovedSchemesDB.getDatabase(this)
-        approvedSchemesDAO = approvedSchemesDB.dao()
+        val approvedSchemesDB = DB.getDatabase(this)
+        userIncentivesDAO = approvedSchemesDB.dao()
 
-        data = approvedSchemesDAO.getalldata() as ArrayList<ApprovedSchemesEntity>?
+        data = userIncentivesDAO.approvedSchemes() as ArrayList<IncentivesEntity>?
         if (data == null) {
             Toast.makeText(this, "Nothing to show!", Toast.LENGTH_SHORT).show()
         } else {

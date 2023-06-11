@@ -27,8 +27,7 @@ class CreatePin : AppCompatActivity() {
         binding.linearLayout.visibility = View.INVISIBLE
 
         val defaultData = hashMapOf(
-            "approved" to ArrayList<HashMap<String, Any>>(),
-            "notApproved" to ArrayList<HashMap<String, Any>>(),
+            "incentives" to ArrayList<HashMap<String, Any>>(),
             "areSchemesUpdated" to true,
             "areApprovedSchemesUpdated" to true,
             "district" to "district"

@@ -1,11 +1,11 @@
-package com.example.ashaapp.room.notapprovedschemes
+package com.example.ashaapp.room.user_incentives
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "NotApprovedSchemesEntity")
-data class NotApprovedSchemesEntity(
+@Entity(tableName = "UserIncentives")
+data class IncentivesEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
 
@@ -18,6 +18,9 @@ data class NotApprovedSchemesEntity(
     @ColumnInfo(name = "value_of_schemes")
     var value_of_schemes: Long,
 
+    @ColumnInfo(name = "isApproved")
+    var isApproved: Boolean,
+
     @ColumnInfo(name = "state")
-    var internetstate: Boolean,
+    var internetState: Boolean,
 )

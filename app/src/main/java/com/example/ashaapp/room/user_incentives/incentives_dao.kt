@@ -1,4 +1,4 @@
-package com.example.ashaapp.room.notapprovedschemes
+package com.example.ashaapp.room.user_incentives
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
@@ -6,25 +6,31 @@ import androidx.room.Insert
 import androidx.room.Query
 
 @Dao
-interface NotApprovedSchemesDAO {
+interface IncentivesDao {
     @Insert
-    fun insert(naScheme: NotApprovedSchemesEntity)
+    fun insert(scheme: IncentivesEntity)
 
-    @Query("SELECT * FROM NotApprovedSchemesEntity")
-    fun getalldata(): LiveData<List<NotApprovedSchemesEntity>?>
+    @Query("SELECT * FROM UserIncentives")
+    fun schemes(): LiveData<List<IncentivesEntity>?>
 
-    @Query("SELECT * FROM NotApprovedSchemesEntity WHERE state=0")
-    fun offlineSchemes(): List<NotApprovedSchemesEntity>?
+    @Query("SELECT * FROM UserIncentives WHERE isApproved=0")
+    fun notApprovedSchemes(): LiveData<List<IncentivesEntity>?>
 
-    @Query("UPDATE NotApprovedSchemesEntity set state=1 where state=0")
-    fun updatestate()
+    @Query("SELECT * FROM UserIncentives WHERE state=0")
+    fun offlineSchemes(): List<IncentivesEntity>?
 
-    @Query("DELETE FROM NotApprovedSchemesEntity")
+    @Query("UPDATE UserIncentives set state=1 where state=0")
+    fun updateState()
+
+    @Query("DELETE FROM UserIncentives")
     fun truncate()
 
-    @Query("DELETE FROM NotApprovedSchemesEntity where state=1")
+    @Query("DELETE FROM UserIncentives where state=1")
     fun deleteOnlineSchemes()
 
-    @Query("DELETE FROM NotApprovedSchemesEntity where req_scheme_name=:req_scheme_name")
-    fun deleteOfflineSchemes(req_scheme_name :String)
+    @Query("DELETE FROM UserIncentives where id=:id")
+    fun deleteScheme(id: Int)
+
+    @Query("SELECT * FROM UserIncentives WHERE isApproved=1")
+    fun approvedSchemes(): List<IncentivesEntity>?
 }

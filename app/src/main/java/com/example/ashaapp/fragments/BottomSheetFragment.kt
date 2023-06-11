@@ -12,9 +12,9 @@ import android.widget.Toast
 import com.example.ashaapp.R
 import com.example.ashaapp.room.allschemes.AllSchemesDAO
 import com.example.ashaapp.room.allschemes.AllSchemesDB
-import com.example.ashaapp.room.notapprovedschemes.NotApprovedSchemesDAO
-import com.example.ashaapp.room.notapprovedschemes.NotApprovedSchemesDB
-import com.example.ashaapp.room.notapprovedschemes.NotApprovedSchemesEntity
+import com.example.ashaapp.room.user_incentives.DB
+import com.example.ashaapp.room.user_incentives.IncentivesDao
+import com.example.ashaapp.room.user_incentives.IncentivesEntity
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.ktx.auth
@@ -29,7 +29,7 @@ class BottomSheetFragment     // Required empty public constructor
 
     private lateinit var db: FirebaseFirestore
     private lateinit var allSchemesDAO: AllSchemesDAO
-    private lateinit var notApprovedSchemesDAO: NotApprovedSchemesDAO
+    private lateinit var userIncentivesDao: IncentivesDao
     private lateinit var adapter_scheme_name: ArrayAdapter<*>
     private lateinit var scheme_code: AutoCompleteTextView
     private lateinit var scheme_name: AutoCompleteTextView
@@ -51,9 +51,9 @@ class BottomSheetFragment     // Required empty public constructor
             allSchemesDAO = allSchemesDB.dao()
         }
 
-        val notApprovedSchemesDB = context?.let { NotApprovedSchemesDB.getDatabase(it) }
-        if (notApprovedSchemesDB != null) {
-            notApprovedSchemesDAO = notApprovedSchemesDB.dao()
+        val userIncentivesDB = context?.let { DB.getDatabase(it) }
+        if (userIncentivesDB != null) {
+            userIncentivesDao = userIncentivesDB.dao()
         }
 
         db = Firebase.firestore
@@ -90,12 +90,13 @@ class BottomSheetFragment     // Required empty public constructor
                 val date = calendar.time
                 val dateTime = Timestamp(date)
 
-                notApprovedSchemesDAO.insert(
-                    NotApprovedSchemesEntity(
+                userIncentivesDao.insert(
+                    IncentivesEntity(
                         0,
                         schemeName,
                         date.time,
                         value,
+                        false,
                         isneton
                     )
                 )
@@ -103,18 +104,19 @@ class BottomSheetFragment     // Required empty public constructor
                     db.collection("users")
                         .document(uid!!)
                         .get().addOnSuccessListener {
-                            val notApproved =
-                                it.data?.get("notApproved") as ArrayList<Map<String, Any>>
-                            notApproved.add(
+                            val incentives =
+                                it.data?.get("incentives") as ArrayList<Map<String, Any>>
+                            incentives.add(
                                 hashMapOf(
                                     "name" to schemeName,
                                     "time" to dateTime,
-                                    "value" to value
+                                    "value" to value,
+                                    "isApproved" to false,
                                 )
                             )
                             db.collection("users")
                                 .document(uid)
-                                .update("notApproved", notApproved)
+                                .update("incentives", incentives)
                                 .addOnSuccessListener {
                                     Toast.makeText(
                                         view.context,

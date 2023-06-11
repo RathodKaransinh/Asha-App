@@ -9,14 +9,14 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ashaapp.R
-import com.example.ashaapp.room.notapprovedschemes.NotApprovedSchemesEntity
+import com.example.ashaapp.room.user_incentives.IncentivesEntity
 import java.util.Date
 
 class adapter_rv_na(c: Context) :
     RecyclerView.Adapter<adapter_rv_na.MyViewHolder>() {
-    var list = ArrayList<NotApprovedSchemesEntity>()
+    var list = ArrayList<IncentivesEntity>()
     private var c: Context
-    private var fullList = ArrayList<NotApprovedSchemesEntity>()
+    private var fullList = ArrayList<IncentivesEntity>()
 
     init {
         this.c = c
@@ -29,10 +29,10 @@ class adapter_rv_na(c: Context) :
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val model: NotApprovedSchemesEntity = list[position]
+        val model: IncentivesEntity = list[position]
         holder.scheme_name_rv.text = model.req_scheme_name
         holder.date_tv.text = Date(model.req_date).toString()
-        if (model.internetstate) {
+        if (model.internetState) {
             holder.scheme_name_rv.setTextColor(ContextCompat.getColor(c, R.color.yellow))
             holder.date_tv.setTextColor(ContextCompat.getColor(c, R.color.grey))
         } else {
@@ -46,7 +46,7 @@ class adapter_rv_na(c: Context) :
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateList(newList: List<NotApprovedSchemesEntity>) {
+    fun updateList(newList: List<IncentivesEntity>) {
         fullList.clear()
         fullList.addAll(newList)
 

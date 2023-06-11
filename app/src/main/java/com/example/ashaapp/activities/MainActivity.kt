@@ -20,34 +20,25 @@ import com.example.ashaapp.fragments.ProfileFragment
 import com.example.ashaapp.room.allschemes.AllSchemesDAO
 import com.example.ashaapp.room.allschemes.AllSchemesDB
 import com.example.ashaapp.room.allschemes.AllSchemesEntity
-import com.example.ashaapp.room.approvedschemes.ApprovedSchemesDAO
-import com.example.ashaapp.room.approvedschemes.ApprovedSchemesDB
-import com.example.ashaapp.room.approvedschemes.ApprovedSchemesEntity
-import com.example.ashaapp.room.notapprovedschemes.NotApprovedSchemesDAO
-import com.example.ashaapp.room.notapprovedschemes.NotApprovedSchemesDB
-import com.example.ashaapp.room.notapprovedschemes.NotApprovedSchemesEntity
+import com.example.ashaapp.room.user_incentives.DB
+import com.example.ashaapp.room.user_incentives.IncentivesDao
+import com.example.ashaapp.room.user_incentives.IncentivesEntity
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Date
-import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var db: FirebaseFirestore
     private lateinit var allSchemesDAO: AllSchemesDAO
-    private lateinit var approvedSchemesDAO: ApprovedSchemesDAO
-    private lateinit var notApprovedSchemesDAO: NotApprovedSchemesDAO
+    private lateinit var userIncentivesDAO: IncentivesDao
     private var areSchemesUpdated = true
     private var areApprovedSchemesUpdated = true
     private val uid = Firebase.auth.uid
-    private lateinit var currentYear: String
-    private lateinit var currentMonth: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,13 +48,6 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.mainTopAppBar)
 
         initDB()
-
-        val calendar: Calendar = Calendar.getInstance()
-        val yearDateFormat = SimpleDateFormat("yyyy", Locale.US)
-        currentYear = yearDateFormat.format(calendar.time)
-
-        val monthDateFormat = SimpleDateFormat("MMM", Locale.US)
-        currentMonth = monthDateFormat.format(calendar.time)
 
         if (isNetworkAvailable()) {
             binding.container.visibility = View.INVISIBLE
@@ -93,7 +77,7 @@ class MainActivity : AppCompatActivity() {
                 }
         }
 
-        notApprovedSchemesDAO.getalldata().observe(this) { data ->
+        userIncentivesDAO.notApprovedSchemes().observe(this) { data ->
             data?.let {
                 updateOfflineSchemes()
             }
@@ -123,35 +107,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateApprovedIncentives() {
-        notApprovedSchemesDAO.deleteOnlineSchemes()
-        approvedSchemesDAO.truncate()
+        userIncentivesDAO.deleteOnlineSchemes()
         db.collection("users")
             .document(uid!!).get().addOnSuccessListener { doc ->
-                val approved =
-                    doc.data?.get("approved") as ArrayList<Map<String, Any>>?
-                val notApproved =
-                    doc.data?.get("notApproved") as ArrayList<Map<String, Any>>?
-                if (approved != null) {
-                    for (scheme in approved) {
-                        approvedSchemesDAO.insert(
-                            ApprovedSchemesEntity(
+                val incentives =
+                    doc.data?.get("incentives") as ArrayList<Map<String, Any>>?
+                if (incentives != null) {
+                    for (incentive in incentives) {
+                        userIncentivesDAO.insert(
+                            IncentivesEntity(
                                 0,
-                                scheme["name"] as String,
-                                (scheme["time"] as Timestamp).toDate().time,
-                                scheme["value"] as Long
-                            )
-                        )
-                    }
-                }
-                if (notApproved != null) {
-                    for (scheme in notApproved) {
-                        notApprovedSchemesDAO.insert(
-                            NotApprovedSchemesEntity(
-                                0,
-                                scheme["name"] as String,
-                                (scheme["time"] as Timestamp).toDate().time,
-                                scheme["value"] as Long,
-                                true
+                                incentive["name"] as String,
+                                (incentive["time"] as Timestamp).toDate().time,
+                                incentive["value"] as Long,
+                                incentive["isApproved"] as Boolean,
+                                true,
                             )
                         )
                     }
@@ -193,7 +163,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateOfflineSchemes() {
-        val offlineSchemes = notApprovedSchemesDAO.offlineSchemes()
+        val offlineSchemes = userIncentivesDAO.offlineSchemes()
 
         if (!offlineSchemes.isNullOrEmpty()) {
             if (isNetworkAvailable()) {
@@ -201,26 +171,27 @@ class MainActivity : AppCompatActivity() {
                 binding.mainProgressBar.visibility = View.VISIBLE
                 db.collection("users")
                     .document(uid!!).get().addOnSuccessListener {
-                        val notApproved =
-                            it.data?.get("notApproved") as ArrayList<Map<String, Any>>
+                        val incentives =
+                            it.data?.get("incentives") as ArrayList<Map<String, Any>>
                         for (scheme in offlineSchemes) {
-                            notApproved.add(
+                            incentives.add(
                                 hashMapOf(
                                     "name" to scheme.req_scheme_name,
                                     "time" to Timestamp(Date(scheme.req_date)),
-                                    "value" to scheme.value_of_schemes
+                                    "value" to scheme.value_of_schemes,
+                                    "isApproved" to false,
                                 )
                             )
                         }
                         db.collection("users")
-                            .document(uid).update("notApproved", notApproved)
+                            .document(uid).update("incentives", incentives)
                             .addOnSuccessListener {
                                 Toast.makeText(
                                     this@MainActivity,
                                     "Offline Data Updated Successfully",
                                     Toast.LENGTH_LONG
                                 ).show()
-                                notApprovedSchemesDAO.updatestate()
+                                userIncentivesDAO.updateState()
                                 binding.mainProgressBar.visibility = View.INVISIBLE
                                 binding.container.visibility = View.VISIBLE
                             }.addOnFailureListener { exception ->
@@ -247,11 +218,8 @@ class MainActivity : AppCompatActivity() {
         val allSchemesDB = AllSchemesDB.getDatabase(this)
         allSchemesDAO = allSchemesDB.dao()
 
-        val approvedSchemesDB = ApprovedSchemesDB.getDatabase(this)
-        approvedSchemesDAO = approvedSchemesDB.dao()
-
-        val notApprovedSchemesDB = NotApprovedSchemesDB.getDatabase(this)
-        notApprovedSchemesDAO = notApprovedSchemesDB.dao()
+        val userIncentivesDB = DB.getDatabase(this)
+        userIncentivesDAO = userIncentivesDB.dao()
     }
 
     private fun loadFragment(fragment: Fragment) {
