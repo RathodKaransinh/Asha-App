@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import com.example.ashaapp.R
 import com.example.ashaapp.room.allschemes.AllSchemesDAO
@@ -95,6 +96,7 @@ class BottomSheetFragment     // Required empty public constructor
         val btn: Button = view.findViewById(R.id.button)
         btn.setOnClickListener {
             val schemeName = scheme_name.text.toString()
+            val number = view.findViewById<EditText>(R.id.editTextNumber).text.toString().toInt()
 
             if (schemeName.isEmpty()) {
                 Toast.makeText(context, "Select scheme name!", Toast.LENGTH_SHORT).show()
@@ -103,31 +105,38 @@ class BottomSheetFragment     // Required empty public constructor
                 val calendar: Calendar = Calendar.getInstance()
                 val date = calendar.time
                 val dateTime = Timestamp(date)
-
-                userIncentivesDao.insert(
-                    IncentivesEntity(
-                        0,
-                        schemeName,
-                        date.time,
-                        value,
-                        false,
-                        isneton
+                var i = 1;
+                while (i <= number) {
+                    userIncentivesDao.insert(
+                        IncentivesEntity(
+                            0,
+                            schemeName,
+                            date.time,
+                            value,
+                            false,
+                            isneton
+                        )
                     )
-                )
+                    i++
+                }
                 if (isneton) {
                     db.collection("users")
                         .document(uid!!)
                         .get().addOnSuccessListener {
                             val incentives =
                                 it.data?.get("incentives") as ArrayList<Map<String, Any>>
-                            incentives.add(
-                                hashMapOf(
-                                    "name" to schemeName,
-                                    "time" to dateTime,
-                                    "value" to value,
-                                    "isApproved" to false,
+                            i = 0
+                            while (i <= number) {
+                                incentives.add(
+                                    hashMapOf(
+                                        "name" to schemeName,
+                                        "time" to dateTime,
+                                        "value" to value,
+                                        "isApproved" to false,
+                                    )
                                 )
-                            )
+                                i++
+                            }
                             db.collection("users")
                                 .document(uid)
                                 .update("incentives", incentives)
