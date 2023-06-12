@@ -62,6 +62,10 @@ class BottomSheetFragment     // Required empty public constructor
         scheme_name = view.findViewById(R.id.scheme)
 
         val codesList: ArrayList<String> = allSchemesDAO.getallschemescode() as ArrayList<String>
+        var set = HashSet<String>()
+        set.addAll(codesList)
+        codesList.clear()
+        codesList.addAll(set)
         val adapter_code: ArrayAdapter<*> =
             ArrayAdapter<Any?>(view.context, R.layout.drop_down, codesList as List<Any?>)
         scheme_code.setAdapter(adapter_code)
@@ -76,6 +80,16 @@ class BottomSheetFragment     // Required empty public constructor
                 schemesList as List<Any?>
             )
             scheme_name.setAdapter(adapter_scheme_name)
+        }
+
+        scheme_name.setOnClickListener {
+            if (scheme_code.text.toString().isNullOrEmpty()) {
+                Toast.makeText(
+                    requireContext(),
+                    "Please select a scheme code first!",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
 
         val btn: Button = view.findViewById(R.id.button)

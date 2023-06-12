@@ -4,6 +4,5 @@
     android:layout_height="wrap_content"
     android:padding="10dp"
     android:text="રાષ્ટ્રીય આયર્ન પ્લસ ઇનિઇશિએટિવ પ્રોગ્રામ અંતગર્ત ૦૬-૫૯ માસના બાળકોનુ મોબીલાઈઝેસન કરી આયર્નની સિરપ આપવા માટે "
-    android:textColor="@color/black"
     android:textSize="20dp"
     android:textStyle="bold" />
