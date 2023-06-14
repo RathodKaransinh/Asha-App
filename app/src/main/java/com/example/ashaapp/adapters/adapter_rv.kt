@@ -1,5 +1,6 @@
 package com.example.ashaapp.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -11,13 +12,12 @@ import com.example.ashaapp.R
 import com.example.ashaapp.room.user_incentives.IncentivesEntity
 import java.util.Date
 
-class adapter_rv(data: ArrayList<IncentivesEntity>, context: Context) :
+class adapter_rv(context: Context) :
     RecyclerView.Adapter<adapter_rv.MyViewHolder>() {
-    private var data: ArrayList<IncentivesEntity>
+    private var data = ArrayList<IncentivesEntity>()
     var context: Context
 
     init {
-        this.data = data
         this.context = context
     }
 
@@ -33,6 +33,13 @@ class adapter_rv(data: ArrayList<IncentivesEntity>, context: Context) :
         holder.date_rv.text = Date(model.req_date).toString()
         holder.scheme_name_rv.setTextColor(ContextCompat.getColor(context, R.color.green))
         holder.date_rv.setTextColor(ContextCompat.getColor(context, R.color.grey))
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateList(newList: List<IncentivesEntity>) {
+        data.clear()
+        data.addAll(newList)
+        notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int {

@@ -32,5 +32,5 @@ interface IncentivesDao {
     fun deleteScheme(id: Int)
 
     @Query("SELECT * FROM UserIncentives WHERE isApproved=1")
-    fun approvedSchemes(): List<IncentivesEntity>?
+    fun approvedSchemes(): LiveData<List<IncentivesEntity>?>
 }

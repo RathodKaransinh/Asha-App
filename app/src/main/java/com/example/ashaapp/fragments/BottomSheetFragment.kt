@@ -25,7 +25,7 @@ import com.google.firebase.ktx.Firebase
 import java.util.Calendar
 
 
-class BottomSheetFragment     // Required empty public constructor
+class BottomSheetFragment
     (private var isneton: Boolean) : BottomSheetDialogFragment() {
 
     private lateinit var db: FirebaseFirestore

@@ -13,9 +13,8 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.example.ashaapp.adapters.OnDeletePressed
 import com.example.ashaapp.adapters.adapter_rv_na
 import com.example.ashaapp.databinding.ActivityAddIncentivesBinding
 import com.example.ashaapp.fragments.BottomSheetFragment
@@ -29,14 +28,12 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.util.*
 
-class AddIncentivesActivity : AppCompatActivity() {
+class AddIncentivesActivity : AppCompatActivity(), OnDeletePressed {
     private lateinit var adapter: adapter_rv_na
     private lateinit var binding: ActivityAddIncentivesBinding
     private lateinit var db: FirebaseFirestore
     private lateinit var userIncentivesDao: IncentivesDao
     private val uid = Firebase.auth.uid
-    private lateinit var notApprovedIncentives: List<IncentivesEntity>
-
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,18 +48,17 @@ class AddIncentivesActivity : AppCompatActivity() {
 
         binding.notApprovedList.setHasFixedSize(true)
         binding.notApprovedList.layoutManager = LinearLayoutManager(this)
-        adapter = adapter_rv_na(this)
+        adapter = adapter_rv_na(this, binding.notApprovedAppBarLayout, this)
         binding.notApprovedList.adapter = adapter
 
         userIncentivesDao.notApprovedSchemes().observe(this) {
             it?.let {
                 adapter.updateList(it)
-                notApprovedIncentives = it
             }
         }
 //        for swipe delete
-        val itemTouchHelper = ItemTouchHelper(simpleCallback)
-        itemTouchHelper.attachToRecyclerView(binding.notApprovedList)
+//        val itemTouchHelper = ItemTouchHelper(simpleCallback)
+//        itemTouchHelper.attachToRecyclerView(binding.notApprovedList)
 
 
         binding.addService.setOnClickListener {
@@ -75,76 +71,76 @@ class AddIncentivesActivity : AppCompatActivity() {
 
 
     //here
-    private var simpleCallback: ItemTouchHelper.SimpleCallback =
-        object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-                return false
-            }
-
-            @SuppressLint("NotifyDataSetChanged")
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                if (isNetworkAvailable()) {
-                    val position = viewHolder.adapterPosition
-                    val builder = AlertDialog.Builder(this@AddIncentivesActivity)
-                    builder.setMessage("Do you want to delete this incentive permanently?")
-                    builder.setTitle("Are you sure?")
-                    builder.setCancelable(false)
-                    builder.setNegativeButton("No") { dialog, _ ->
-                        dialog.dismiss()
-                        adapter.notifyDataSetChanged()
-                    }
-                    builder.setPositiveButton("Yes") { dialog, _ ->
-                        db.collection("users")
-                            .document(uid!!)
-                            .get().addOnSuccessListener {
-                                val incentives =
-                                    it.data?.get("incentives") as ArrayList<Map<String, Any>>
-                                val toBeRemovedObj = hashMapOf(
-                                    "name" to notApprovedIncentives[position].req_scheme_name,
-                                    "time" to Timestamp(Date(notApprovedIncentives[position].req_date)),
-                                    "value" to notApprovedIncentives[position].value_of_schemes,
-                                    "isApproved" to false
-                                )
-                                incentives.remove(toBeRemovedObj)
-                                userIncentivesDao.deleteScheme(notApprovedIncentives[position].id)
-                                db.collection("users")
-                                    .document(uid)
-                                    .update("incentives", incentives)
-                                    .addOnSuccessListener {
-                                        dialog.dismiss()
-                                        Toast.makeText(
-                                            this@AddIncentivesActivity,
-                                            "Data removed Successfully",
-                                            Toast.LENGTH_LONG
-                                        ).show()
-                                    }
-                                    .addOnFailureListener { exception ->
-                                        dialog.dismiss()
-                                        adapter.notifyDataSetChanged()
-                                        Log.d("Error", exception.toString())
-                                    }
-                            }
-                    }
-                    val alertDialog = builder.create()
-                    alertDialog.show()
-                } else {
-                    val builder = AlertDialog.Builder(this@AddIncentivesActivity)
-                    builder.setMessage("તમારુ નેટ બંધ છે, નેટચાલુ કરી ફરી પ્રયાસ કરો")
-                    builder.setTitle("Alert !")
-                    builder.setCancelable(false)
-                    builder.setPositiveButton("ઓકે") { dialog, _ ->
-                        dialog.dismiss()
-                    }
-                    val alertDialog = builder.create()
-                    alertDialog.show()
-                    adapter.notifyDataSetChanged()
-                }
-            }
-        }
+//    private var simpleCallback: ItemTouchHelper.SimpleCallback =
+//        object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+//            override fun onMove(
+//                recyclerView: RecyclerView,
+//                viewHolder: RecyclerView.ViewHolder,
+//                target: RecyclerView.ViewHolder
+//            ): Boolean {
+//                return false
+//            }
+//
+//            @SuppressLint("NotifyDataSetChanged")
+//            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+//                if (isNetworkAvailable()) {
+//                    val position = viewHolder.adapterPosition
+//                    val builder = AlertDialog.Builder(this@AddIncentivesActivity)
+//                    builder.setMessage("Do you want to delete this incentive permanently?")
+//                    builder.setTitle("Are you sure?")
+//                    builder.setCancelable(false)
+//                    builder.setNegativeButton("No") { dialog, _ ->
+//                        dialog.dismiss()
+//                        adapter.notifyDataSetChanged()
+//                    }
+//                    builder.setPositiveButton("Yes") { dialog, _ ->
+//                        db.collection("users")
+//                            .document(uid!!)
+//                            .get().addOnSuccessListener {
+//                                val incentives =
+//                                    it.data?.get("incentives") as ArrayList<Map<String, Any>>
+//                                val toBeRemovedObj = hashMapOf(
+//                                    "name" to notApprovedIncentives[position].req_scheme_name,
+//                                    "time" to Timestamp(Date(notApprovedIncentives[position].req_date)),
+//                                    "value" to notApprovedIncentives[position].value_of_schemes,
+//                                    "isApproved" to false
+//                                )
+//                                incentives.remove(toBeRemovedObj)
+//                                userIncentivesDao.deleteScheme(notApprovedIncentives[position].id)
+//                                db.collection("users")
+//                                    .document(uid)
+//                                    .update("incentives", incentives)
+//                                    .addOnSuccessListener {
+//                                        dialog.dismiss()
+//                                        Toast.makeText(
+//                                            this@AddIncentivesActivity,
+//                                            "Data removed Successfully",
+//                                            Toast.LENGTH_LONG
+//                                        ).show()
+//                                    }
+//                                    .addOnFailureListener { exception ->
+//                                        dialog.dismiss()
+//                                        adapter.notifyDataSetChanged()
+//                                        Log.d("Error", exception.toString())
+//                                    }
+//                            }
+//                    }
+//                    val alertDialog = builder.create()
+//                    alertDialog.show()
+//                } else {
+//                    val builder = AlertDialog.Builder(this@AddIncentivesActivity)
+//                    builder.setMessage("તમારુ નેટ બંધ છે, નેટચાલુ કરી ફરી પ્રયાસ કરો")
+//                    builder.setTitle("Alert !")
+//                    builder.setCancelable(false)
+//                    builder.setPositiveButton("ઓકે") { dialog, _ ->
+//                        dialog.dismiss()
+//                    }
+//                    val alertDialog = builder.create()
+//                    alertDialog.show()
+//                    adapter.notifyDataSetChanged()
+//                }
+//            }
+//        }
 
 
     private fun initDB() {
@@ -153,11 +149,10 @@ class AddIncentivesActivity : AppCompatActivity() {
         val userIncentivesDB = DB.getDatabase(this)
         userIncentivesDao = userIncentivesDB.dao()
 
-        val networkRequest = NetworkRequest.Builder()
-            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
-            .build()
+        val networkRequest =
+            NetworkRequest.Builder().addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR).build()
 
         val networkCallback = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
@@ -168,48 +163,46 @@ class AddIncentivesActivity : AppCompatActivity() {
                         binding.notApprovedList.visibility = View.INVISIBLE
                         binding.addService.visibility = View.INVISIBLE
                         binding.addIncentivesProgressBar.visibility = View.VISIBLE
-                        db.collection("users")
-                            .document(uid!!).get().addOnSuccessListener {
-                                val incentives =
-                                    it.data?.get("incentives") as ArrayList<Map<String, Any>>
-                                for (scheme in offlineSchemes) {
-                                    incentives.add(
-                                        hashMapOf(
-                                            "name" to scheme.req_scheme_name,
-                                            "time" to Timestamp(Date(scheme.req_date)),
-                                            "value" to scheme.value_of_schemes,
-                                            "isApproved" to false,
-                                        )
+                        db.collection("users").document(uid!!).get().addOnSuccessListener {
+                            val incentives =
+                                it.data?.get("incentives") as ArrayList<Map<String, Any>>
+                            for (scheme in offlineSchemes) {
+                                incentives.add(
+                                    hashMapOf(
+                                        "name" to scheme.req_scheme_name,
+                                        "time" to Timestamp(Date(scheme.req_date)),
+                                        "value" to scheme.value_of_schemes,
+                                        "isApproved" to false,
                                     )
-                                }
-                                db.collection("users")
-                                    .document(uid).update("incentives", incentives)
-                                    .addOnSuccessListener {
-                                        Toast.makeText(
-                                            this@AddIncentivesActivity,
-                                            "Offline Data Updated Successfully",
-                                            Toast.LENGTH_LONG
-                                        ).show()
-                                        userIncentivesDao.updateState()
-                                        binding.notApprovedList.visibility = View.VISIBLE
-                                        binding.addService.visibility = View.VISIBLE
-                                        binding.addIncentivesProgressBar.visibility = View.INVISIBLE
-                                    }.addOnFailureListener { exception ->
-                                        Log.d("Error", exception.toString())
-                                        binding.notApprovedList.visibility = View.VISIBLE
-                                        binding.addService.visibility = View.VISIBLE
-                                        binding.addIncentivesProgressBar.visibility = View.INVISIBLE
-                                    }
-                            }.addOnFailureListener {
-                                Toast.makeText(
-                                    this@AddIncentivesActivity,
-                                    "Offline Data Updated UnSuccessfully",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                                binding.notApprovedList.visibility = View.VISIBLE
-                                binding.addService.visibility = View.VISIBLE
-                                binding.addIncentivesProgressBar.visibility = View.INVISIBLE
+                                )
                             }
+                            db.collection("users").document(uid).update("incentives", incentives)
+                                .addOnSuccessListener {
+                                    Toast.makeText(
+                                        this@AddIncentivesActivity,
+                                        "Offline Data Updated Successfully",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                    userIncentivesDao.updateState()
+                                    binding.notApprovedList.visibility = View.VISIBLE
+                                    binding.addService.visibility = View.VISIBLE
+                                    binding.addIncentivesProgressBar.visibility = View.INVISIBLE
+                                }.addOnFailureListener { exception ->
+                                    Log.d("Error", exception.toString())
+                                    binding.notApprovedList.visibility = View.VISIBLE
+                                    binding.addService.visibility = View.VISIBLE
+                                    binding.addIncentivesProgressBar.visibility = View.INVISIBLE
+                                }
+                        }.addOnFailureListener {
+                            Toast.makeText(
+                                this@AddIncentivesActivity,
+                                "Offline Data Updated UnSuccessfully",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            binding.notApprovedList.visibility = View.VISIBLE
+                            binding.addService.visibility = View.VISIBLE
+                            binding.addIncentivesProgressBar.visibility = View.INVISIBLE
+                        }
                     }
                 }
                 super.onAvailable(network)
@@ -236,6 +229,55 @@ class AddIncentivesActivity : AppCompatActivity() {
 
         else -> {
             super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun deleteIncentives(list: ArrayList<IncentivesEntity>) {
+        val tbdList: ArrayList<IncentivesEntity> = ArrayList()
+        tbdList.addAll(list)
+        if (isNetworkAvailable()) {
+            binding.notApprovedList.visibility = View.INVISIBLE
+            binding.addService.visibility = View.INVISIBLE
+            binding.addIncentivesProgressBar.visibility = View.VISIBLE
+            db.collection("users").document(uid!!).get().addOnSuccessListener {
+                val incentives = it.data?.get("incentives") as ArrayList<Map<String, Any>>
+                for (i in 0 until tbdList.size) {
+                    val toBeRemovedObj = hashMapOf(
+                        "name" to tbdList[i].req_scheme_name,
+                        "time" to tbdList[i].req_date,
+                        "value" to tbdList[i].value_of_schemes,
+                        "isApproved" to false
+                    )
+                    incentives.remove(toBeRemovedObj)
+                    userIncentivesDao.deleteScheme(tbdList[i].id)
+                }
+                db.collection("users").document(uid).update("incentives", incentives)
+                    .addOnSuccessListener {
+                        Toast.makeText(
+                            this@AddIncentivesActivity,
+                            "Data removed Successfully",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        binding.notApprovedList.visibility = View.VISIBLE
+                        binding.addService.visibility = View.VISIBLE
+                        binding.addIncentivesProgressBar.visibility = View.INVISIBLE
+                    }.addOnFailureListener { exception ->
+                        binding.notApprovedList.visibility = View.VISIBLE
+                        binding.addService.visibility = View.VISIBLE
+                        binding.addIncentivesProgressBar.visibility = View.INVISIBLE
+                        Log.d("Error", exception.toString())
+                    }
+            }
+        } else {
+            val builder = AlertDialog.Builder(this@AddIncentivesActivity)
+            builder.setMessage("તમારુ નેટ બંધ છે, નેટચાલુ કરી ફરી પ્રયાસ કરો")
+            builder.setTitle("Alert !")
+            builder.setCancelable(false)
+            builder.setPositiveButton("ઓકે") { dialog, _ ->
+                dialog.dismiss()
+            }
+            val alertDialog = builder.create()
+            alertDialog.show()
         }
     }
 }
