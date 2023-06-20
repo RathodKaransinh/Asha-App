@@ -16,6 +16,7 @@ import androidx.fragment.app.FragmentTransaction
 import com.example.ashaapp.R
 import com.example.ashaapp.databinding.ActivityMainBinding
 import com.example.ashaapp.fragments.AnalyticsCard
+import com.example.ashaapp.fragments.OnRefresh
 import com.example.ashaapp.fragments.ProfileFragment
 import com.example.ashaapp.room.allschemes.AllSchemesDAO
 import com.example.ashaapp.room.allschemes.AllSchemesDB
@@ -30,7 +31,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.util.Date
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), OnRefresh {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var db: FirebaseFirestore
@@ -49,46 +50,21 @@ class MainActivity : AppCompatActivity() {
 
         initDB()
 
-        if (isNetworkAvailable()) {
-            binding.container.visibility = View.INVISIBLE
-            binding.mainProgressBar.visibility = View.VISIBLE
-            db.collection("users").document(uid!!)
-                .get().addOnSuccessListener {
-                    areSchemesUpdated = it.get("areSchemesUpdated") as Boolean
-                    areApprovedSchemesUpdated = it.get("areApprovedSchemesUpdated") as Boolean
+        updateIncentives()
 
-                    if (areSchemesUpdated || areApprovedSchemesUpdated) {
-                        if (areSchemesUpdated) {
-                            updateServices()
-                        }
-
-                        if (areApprovedSchemesUpdated) {
-                            updateApprovedIncentives()
-                        }
-                    } else {
-                        binding.mainProgressBar.visibility = View.INVISIBLE
-                        binding.container.visibility = View.VISIBLE
-                    }
-
-                }.addOnFailureListener {
-                    Toast.makeText(this, "Failed to update flags", Toast.LENGTH_SHORT).show()
-                    binding.mainProgressBar.visibility = View.INVISIBLE
-                    binding.container.visibility = View.VISIBLE
-                }
-        }
-
+//        offline incentives observer
         userIncentivesDAO.notApprovedSchemes().observe(this) { data ->
             data?.let {
                 updateOfflineSchemes()
             }
         }
 
-        if (savedInstanceState == null) loadFragment(AnalyticsCard())
+        if (savedInstanceState == null) loadFragment(AnalyticsCard(this))
 
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.home_page -> {
-                    loadFragment(AnalyticsCard())
+                    loadFragment(AnalyticsCard(this))
                     true
                 }
 
@@ -106,59 +82,87 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateApprovedIncentives() {
-        userIncentivesDAO.deleteOnlineSchemes()
-        db.collection("users")
-            .document(uid!!).get().addOnSuccessListener { doc ->
-                val incentives =
-                    doc.data?.get("incentives") as ArrayList<Map<String, Any>>?
-                if (incentives != null) {
-                    for (incentive in incentives) {
-                        userIncentivesDAO.insert(
-                            IncentivesEntity(
-                                0,
-                                incentive["name"] as String,
-                                (incentive["time"] as Timestamp).toDate().time,
-                                incentive["value"] as Long,
-                                incentive["isApproved"] as Boolean,
-                                true,
-                            )
-                        )
+    private fun updateIncentives() {
+        if (isNetworkAvailable()) {
+            binding.container.visibility = View.INVISIBLE
+            binding.mainProgressBar.visibility = View.VISIBLE
+            db.collection("users").document(uid!!).get().addOnSuccessListener {
+                areSchemesUpdated = it.get("areSchemesUpdated") as Boolean
+                areApprovedSchemesUpdated = it.get("areApprovedSchemesUpdated") as Boolean
+
+                if (areSchemesUpdated || areApprovedSchemesUpdated) {
+                    if (areSchemesUpdated) {
+                        updateServices()
                     }
+
+                    if (areApprovedSchemesUpdated) {
+                        updateApprovedIncentives()
+                    }
+                } else {
+                    binding.mainProgressBar.visibility = View.INVISIBLE
+                    binding.container.visibility = View.VISIBLE
                 }
-                db.collection("users")
-                    .document(uid).update("areApprovedSchemesUpdated", false)
-                areApprovedSchemesUpdated = false
-                Toast.makeText(
-                    this, "Schemes Updated Successfully", Toast.LENGTH_SHORT
-                ).show()
+
+            }.addOnFailureListener {
+                Toast.makeText(this, "Failed to update flags", Toast.LENGTH_SHORT).show()
                 binding.mainProgressBar.visibility = View.INVISIBLE
                 binding.container.visibility = View.VISIBLE
             }
+        }
     }
 
-    private fun updateServices() {
-        allSchemesDAO.truncate()
-        db.collection("services").get().addOnSuccessListener { codes ->
-            for (code in codes) {
-                val schemesList =
-                    code.data["schemes"] as ArrayList<Map<String, Any>>
-                for (scheme in schemesList) {
-                    allSchemesDAO.insert(
-                        AllSchemesEntity(
+    private fun updateApprovedIncentives() {
+        userIncentivesDAO.deleteOnlineSchemes()
+        db.collection("users").document(uid!!).get().addOnSuccessListener { doc ->
+            val incentives = doc.data?.get("incentives") as ArrayList<Map<String, Any>>?
+            if (incentives != null) {
+                for (incentive in incentives) {
+                    userIncentivesDAO.insert(
+                        IncentivesEntity(
                             0,
-                            code.id,
-                            scheme["name"] as String,
-                            scheme["value"] as Long
+                            incentive["name"] as String,
+                            (incentive["time"] as Timestamp).toDate().time,
+                            incentive["value"] as Long,
+                            incentive["isApproved"] as Boolean,
+                            true,
                         )
                     )
                 }
             }
-            db.collection("users")
-                .document(uid!!).update("areSchemesUpdated", false)
-            areSchemesUpdated = false
+            db.collection("users").document(uid).update("areApprovedSchemesUpdated", false)
+            areApprovedSchemesUpdated = false
+            Toast.makeText(
+                this, "Schemes Updated Successfully", Toast.LENGTH_SHORT
+            ).show()
             binding.mainProgressBar.visibility = View.INVISIBLE
             binding.container.visibility = View.VISIBLE
+        }
+    }
+
+    private fun updateServices() {
+        allSchemesDAO.truncate()
+        db.collection("incentives").document("incentives").get().addOnSuccessListener { doc ->
+            val map = doc.data!! as Map<String, ArrayList<Map<String, Any>>>
+            map.forEach { entry ->
+                val list = entry.value
+                for (element in list) {
+                    allSchemesDAO.insert(
+                        AllSchemesEntity(
+                            0, entry.key, element["name"] as String, element["value"] as Long
+                        )
+                    )
+                }
+            }
+            db.collection("users").document(uid!!).update("areSchemesUpdated", false)
+                .addOnSuccessListener {
+                    binding.mainProgressBar.visibility = View.INVISIBLE
+                    binding.container.visibility = View.VISIBLE
+                }
+                .addOnFailureListener {
+                    binding.mainProgressBar.visibility = View.INVISIBLE
+                    binding.container.visibility = View.VISIBLE
+                }
+            areSchemesUpdated = false
         }
     }
 
@@ -169,45 +173,42 @@ class MainActivity : AppCompatActivity() {
             if (isNetworkAvailable()) {
                 binding.container.visibility = View.INVISIBLE
                 binding.mainProgressBar.visibility = View.VISIBLE
-                db.collection("users")
-                    .document(uid!!).get().addOnSuccessListener {
-                        val incentives =
-                            it.data?.get("incentives") as ArrayList<Map<String, Any>>
-                        for (scheme in offlineSchemes) {
-                            incentives.add(
-                                hashMapOf(
-                                    "name" to scheme.req_scheme_name,
-                                    "time" to Timestamp(Date(scheme.req_date)),
-                                    "value" to scheme.value_of_schemes,
-                                    "isApproved" to false,
-                                )
+                db.collection("users").document(uid!!).get().addOnSuccessListener {
+                    val incentives = it.data?.get("incentives") as ArrayList<Map<String, Any>>
+                    for (scheme in offlineSchemes) {
+                        incentives.add(
+                            hashMapOf(
+                                "name" to scheme.req_scheme_name,
+                                "time" to Timestamp(Date(scheme.req_date)),
+                                "value" to scheme.value_of_schemes,
+                                "isApproved" to false,
                             )
-                        }
-                        db.collection("users")
-                            .document(uid).update("incentives", incentives)
-                            .addOnSuccessListener {
-                                Toast.makeText(
-                                    this@MainActivity,
-                                    "Offline Data Updated Successfully",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                                userIncentivesDAO.updateState()
-                                binding.mainProgressBar.visibility = View.INVISIBLE
-                                binding.container.visibility = View.VISIBLE
-                            }.addOnFailureListener { exception ->
-                                Log.d("Error", exception.toString())
-                                binding.mainProgressBar.visibility = View.INVISIBLE
-                                binding.container.visibility = View.VISIBLE
-                            }
-                    }.addOnFailureListener {
-                        Toast.makeText(
-                            this@MainActivity,
-                            "Offline Data Updated UnSuccessfully",
-                            Toast.LENGTH_LONG
-                        ).show()
-                        binding.mainProgressBar.visibility = View.INVISIBLE
-                        binding.container.visibility = View.VISIBLE
+                        )
                     }
+                    db.collection("users").document(uid).update("incentives", incentives)
+                        .addOnSuccessListener {
+                            Toast.makeText(
+                                this@MainActivity,
+                                "Offline Data Updated Successfully",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            userIncentivesDAO.updateState()
+                            binding.mainProgressBar.visibility = View.INVISIBLE
+                            binding.container.visibility = View.VISIBLE
+                        }.addOnFailureListener { exception ->
+                            Log.d("Error", exception.toString())
+                            binding.mainProgressBar.visibility = View.INVISIBLE
+                            binding.container.visibility = View.VISIBLE
+                        }
+                }.addOnFailureListener {
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Offline Data Updated UnSuccessfully",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    binding.mainProgressBar.visibility = View.INVISIBLE
+                    binding.container.visibility = View.VISIBLE
+                }
             }
         }
     }
@@ -250,5 +251,9 @@ class MainActivity : AppCompatActivity() {
         else -> {
             super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onRefresh() {
+        updateIncentives()
     }
 }

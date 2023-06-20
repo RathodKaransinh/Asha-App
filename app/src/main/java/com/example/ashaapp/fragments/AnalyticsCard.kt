@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.ashaapp.R
 import com.example.ashaapp.room.user_incentives.DB
 import java.text.SimpleDateFormat
@@ -14,7 +15,9 @@ import java.util.Date
 import java.util.Locale
 
 
-class AnalyticsCard : Fragment() {
+class AnalyticsCard(
+    private var listener: OnRefresh
+) : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -22,6 +25,7 @@ class AnalyticsCard : Fragment() {
     ): View {
         val view: View = inflater.inflate(R.layout.fragment_analytics_card, container, false)
 
+        val swipeRefreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.swipeRefreshLayout)
         val currentYear = SimpleDateFormat("yyyy", Locale.US).format(Calendar.getInstance().time)
         val currentMonth = SimpleDateFormat("MMM", Locale.US).format(Calendar.getInstance().time)
         val userIncentivesDao = DB.getDatabase(requireContext()).dao()
@@ -55,7 +59,15 @@ class AnalyticsCard : Fragment() {
             }
         }
 
+        swipeRefreshLayout.setOnRefreshListener {
+            listener.onRefresh()
+            swipeRefreshLayout.isRefreshing = false
+        }
 
         return view
     }
+}
+
+interface OnRefresh {
+    fun onRefresh()
 }

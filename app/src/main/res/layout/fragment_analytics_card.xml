@@ -1,184 +1,191 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipeRefreshLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical"
-    tools:context=".fragments.AnalyticsCard">
+    android:orientation="vertical">
 
-    <!-- TODO: Update blank fragment layout -->
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:layout_marginEnd="@dimen/_10sdp"
-        android:layout_marginBottom="@dimen/_10sdp"
-        tools:ignore="UselessParent">
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        tools:context=".fragments.AnalyticsCard">
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/first_card"
-            android:layout_width="@dimen/_160sdp"
-            android:layout_height="@dimen/_180sdp"
-            app:cardCornerRadius="5dp"
-            app:cardElevation="10dp"
-            app:strokeWidth="1dp">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:id="@+id/amount_month"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/_55sdp"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textSize="@dimen/_20ssp"
-                    android:textStyle="bold"
-                    tools:ignore="HardcodedText" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/amount_month"
-                    android:paddingTop="@dimen/_5sdp"
-                    android:text="Amount generated this month"
-                    android:textAlignment="center"
-                    android:textSize="18sp"
-                    tools:ignore="HardcodedText" />
-
-                <pl.droidsonroids.gif.GifImageView
-                    android:layout_width="@dimen/_30sdp"
-                    android:layout_height="@dimen/_1sdp"
-                    android:layout_below="@+id/amount_month"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginTop="@dimen/_30sdp"
-                    android:layout_marginEnd="@dimen/_10sdp"
-                    android:src="@drawable/incentives_gif" />
-            </RelativeLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/second_card"
-            android:layout_width="@dimen/_120sdp"
-            android:layout_height="@dimen/_85sdp"
-            android:layout_marginStart="@dimen/_11sdp"
-            android:layout_toEndOf="@+id/first_card"
-            app:cardCornerRadius="@dimen/_5sdp"
-            app:cardElevation="10dp"
-            app:strokeWidth="1dp">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:id="@+id/number_month"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/_15sdp"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textSize="@dimen/_20ssp"
-                    android:textStyle="bold"
-                    tools:ignore="HardcodedText" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/number_month"
-                    android:paddingTop="@dimen/_1sdp"
-                    android:text="Incentives this month"
-                    android:textAlignment="center"
-                    android:textSize="18sp"
-                    tools:ignore="HardcodedText" />
-            </RelativeLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/third_card"
-            android:layout_width="@dimen/_120sdp"
-            android:layout_height="@dimen/_85sdp"
-            android:layout_below="@+id/second_card"
-            android:layout_marginStart="@dimen/_11sdp"
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_10sdp"
             android:layout_marginTop="@dimen/_10sdp"
-            android:layout_toEndOf="@+id/first_card"
-            app:cardCornerRadius="@dimen/_5sdp"
-            app:cardElevation="10dp"
-            app:strokeWidth="1dp">
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
+            tools:ignore="UselessParent">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/first_card"
+                android:layout_width="@dimen/_160sdp"
+                android:layout_height="@dimen/_180sdp"
+                app:cardCornerRadius="5dp"
+                app:cardElevation="10dp"
+                app:strokeWidth="1dp">
 
-                <TextView
-                    android:id="@+id/number_year"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/_15sdp"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textSize="@dimen/_20ssp"
-                    android:textStyle="bold"
-                    tools:ignore="HardcodedText" />
+                    android:layout_height="match_parent">
 
-                <TextView
+                    <TextView
+                        android:id="@+id/amount_month"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/_55sdp"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textSize="@dimen/_20ssp"
+                        android:textStyle="bold"
+                        tools:ignore="HardcodedText" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/amount_month"
+                        android:paddingTop="@dimen/_5sdp"
+                        android:text="Amount generated this month"
+                        android:textAlignment="center"
+                        android:textSize="18sp"
+                        tools:ignore="HardcodedText" />
+
+                    <pl.droidsonroids.gif.GifImageView
+                        android:layout_width="@dimen/_30sdp"
+                        android:layout_height="@dimen/_1sdp"
+                        android:layout_below="@+id/amount_month"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginTop="@dimen/_30sdp"
+                        android:layout_marginEnd="@dimen/_10sdp"
+                        android:src="@drawable/incentives_gif" />
+                </RelativeLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/second_card"
+                android:layout_width="@dimen/_120sdp"
+                android:layout_height="@dimen/_85sdp"
+                android:layout_marginStart="@dimen/_11sdp"
+                android:layout_toEndOf="@+id/first_card"
+                app:cardCornerRadius="@dimen/_5sdp"
+                app:cardElevation="10dp"
+                app:strokeWidth="1dp">
+
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/number_year"
-                    android:paddingTop="@dimen/_1sdp"
-                    android:text="Incentives this year"
-                    android:textAlignment="center"
-                    android:textSize="18sp"
-                    tools:ignore="HardcodedText" />
-            </RelativeLayout>
+                    android:layout_height="match_parent">
 
-        </com.google.android.material.card.MaterialCardView>
+                    <TextView
+                        android:id="@+id/number_month"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/_15sdp"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textSize="@dimen/_20ssp"
+                        android:textStyle="bold"
+                        tools:ignore="HardcodedText" />
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/fourth_card"
-            android:layout_width="@dimen/_292sdp"
-            android:layout_height="@dimen/_120sdp"
-            android:layout_below="@+id/first_card"
-            android:layout_marginTop="16dp"
-            app:cardCornerRadius="@dimen/_5sdp"
-            app:cardElevation="10dp"
-            app:strokeWidth="1dp">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/number_month"
+                        android:paddingTop="@dimen/_1sdp"
+                        android:text="Incentives this month"
+                        android:textAlignment="center"
+                        android:textSize="18sp"
+                        tools:ignore="HardcodedText" />
+                </RelativeLayout>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+            </com.google.android.material.card.MaterialCardView>
 
-                <TextView
-                    android:id="@+id/amount_year"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/third_card"
+                android:layout_width="@dimen/_120sdp"
+                android:layout_height="@dimen/_85sdp"
+                android:layout_below="@+id/second_card"
+                android:layout_marginStart="@dimen/_11sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_toEndOf="@+id/first_card"
+                app:cardCornerRadius="@dimen/_5sdp"
+                app:cardElevation="10dp"
+                app:strokeWidth="1dp">
+
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/_30sdp"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textSize="@dimen/_20ssp"
-                    android:textStyle="bold"
-                    tools:ignore="HardcodedText" />
+                    android:layout_height="match_parent">
 
-                <TextView
+                    <TextView
+                        android:id="@+id/number_year"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/_15sdp"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textSize="@dimen/_20ssp"
+                        android:textStyle="bold"
+                        tools:ignore="HardcodedText" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/number_year"
+                        android:paddingTop="@dimen/_1sdp"
+                        android:text="Incentives this year"
+                        android:textAlignment="center"
+                        android:textSize="18sp"
+                        tools:ignore="HardcodedText" />
+                </RelativeLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/fourth_card"
+                android:layout_width="@dimen/_292sdp"
+                android:layout_height="@dimen/_120sdp"
+                android:layout_below="@+id/first_card"
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="@dimen/_5sdp"
+                app:cardElevation="10dp"
+                app:strokeWidth="1dp">
+
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/amount_year"
-                    android:paddingTop="@dimen/_5sdp"
-                    android:text="Amount generated this year"
-                    android:textAlignment="center"
-                    android:textSize="18sp"
-                    tools:ignore="HardcodedText" />
-            </RelativeLayout>
+                    android:layout_height="match_parent">
 
-        </com.google.android.material.card.MaterialCardView>
+                    <TextView
+                        android:id="@+id/amount_year"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/_30sdp"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textSize="@dimen/_20ssp"
+                        android:textStyle="bold"
+                        tools:ignore="HardcodedText" />
 
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/amount_year"
+                        android:paddingTop="@dimen/_5sdp"
+                        android:text="Amount generated this year"
+                        android:textAlignment="center"
+                        android:textSize="18sp"
+                        tools:ignore="HardcodedText" />
+                </RelativeLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </RelativeLayout>
     </RelativeLayout>
-</RelativeLayout>
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
